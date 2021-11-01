@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="MenuAssets.png">
+	<!-- Created with Adobe Animate version 20.5.0.29329 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="freeplay basic0000" x="0" y="0" width="652" height="191"/>
+	<SubTexture name="freeplay white0000" x="652" y="0" width="761" height="222"/>
+	<SubTexture name="freeplay white0001" x="652" y="0" width="761" height="222"/>
+	<SubTexture name="freeplay white0002" x="652" y="0" width="761" height="222"/>
+	<SubTexture name="options basic0000" x="1413" y="0" width="652" height="191"/>
+	<SubTexture name="options white0000" x="2065" y="0" width="801" height="227"/>
+	<SubTexture name="replays basic0000" x="2866" y="0" width="652" height="191"/>
+	<SubTexture name="replays white0000" x="0" y="227" width="662" height="206"/>
+	<SubTexture name="story mode basic0000" x="662" y="227" width="652" height="191"/>
+	<SubTexture name="story mode white0000" x="1314" y="227" width="661" height="206"/>
+</TextureAtlas>

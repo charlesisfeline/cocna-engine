@@ -1,0 +1,3 @@
+Put the character sprite sheet (character.png) and xml (character.xml) in a folder titled with your character name
+Add a file called "data.txt" and a file named "characterOffsets.txt"
+(just copy this from the example character and edit the values)

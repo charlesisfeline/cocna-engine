@@ -1,0 +1,4 @@
+:cuzsie:Hey! It seems like you enabled dialogue!
+:cuzsie:But the dialogue couldnt be found!
+:cuzsie:To fix this, add your dialogue in data/yoursong/dialogue
+:cuzsie:To figure out how to make dialogue, check the documentation!

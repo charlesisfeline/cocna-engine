@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="skinIcon.png">
+	<!-- Created with Adobe Animate version 20.5.0.29329 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="basic0000" x="0" y="0" width="400" height="400"/>
+	<SubTexture name="white0000" x="0" y="400" width="845" height="438"/>
+</TextureAtlas>
