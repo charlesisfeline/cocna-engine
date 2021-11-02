@@ -2165,6 +2165,8 @@ class PlayState extends MusicBeatState
 			DiscordClient.changePresence("Chart Editor", null, null, true);
 			#end
 			ChartingState.fromSongMenu = false;
+			
+			GlobalData.latestDiff = storyDifficulty;
 			FlxG.switchState(new ChartingState());
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
 			#if windows

@@ -1771,7 +1771,7 @@ class ChartingState extends MusicBeatState
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data.trim(), _song.song.toLowerCase() + ".json");
+			_file.save(data.trim(), Utility.difficultyFromInt(GlobalData.latestDiff) + ".funkin");
 		}
 	}
 

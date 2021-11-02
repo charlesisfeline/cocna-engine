@@ -320,6 +320,8 @@ class FreeplayState extends MusicBeatState
 			songFormat = Utility.songLowercase(songFormat);
 
 			var hmm = songData.get(songs[currentSelected].songName)[currentDifficulty];
+
+			GlobalData.latestDiff = currentDifficulty;
 	
 			PlayState.SONG = hmm;
 			ChartingState.fromSongMenu = true;

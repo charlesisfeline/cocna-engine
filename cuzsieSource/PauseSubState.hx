@@ -190,6 +190,7 @@ class PauseSubState extends MusicBeatSubstate
 							(cast (Lib.current.getChildAt(0), Main)).setFPSCap(290);
 						}
 
+						GlobalData.latestDiff = PlayState.storyDifficulty;
 						ChartingState.fromSongMenu = false;
 						FlxG.switchState(new ChartingState());
 
