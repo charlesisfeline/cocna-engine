@@ -1,5 +1,6 @@
 package;
 
+import editors.WeekCreator;
 import lime.app.Application;
 import lime.system.DisplayMode;
 import flixel.util.FlxColor;
@@ -115,6 +116,27 @@ class CpuStrums extends Option
 	private override function updateDisplay():String
 	{
 		return  FlxG.save.data.cpuStrums ? "Light CPU Strums" : "CPU Strums stay static";
+	}
+
+}
+
+class NewWeek extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		FlxG.switchState(new editors.WeekCreator());
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "Edit Weeks";
 	}
 
 }

@@ -202,7 +202,7 @@ class Stage
                         fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.stages('limo/fastCarLol'));
 						fastCar.antialiasing = FlxG.save.data.antialiasing;
 
-						if (FlxG.save.data.distractions)
+						/*if (FlxG.save.data.distractions)
 						{
 							var grpLimoDancers = new FlxTypedGroup<BackgroundDancer>();
 							swagGroup['grpLimoDancers'] = grpLimoDancers;
@@ -210,14 +210,14 @@ class Stage
 
 							for (i in 0...5)
 							{
-								var dancer:BackgroundDancer = new BackgroundDancer((370 * i) + 130, bgLimo.y - 400);
+								var dancer:BackgroundDancer = new BackgroundDancer((370 * i) + 130, bgLimo.y - 400,"PLEASE FIX THIS");
 								dancer.scrollFactor.set(0.4, 0.4);
 								grpLimoDancers.add(dancer);
 							}
 
                             swagBacks['fastCar'] = fastCar;
                             layInFront[2].push(fastCar);
-						}
+						}*/
 
 						var overlayShit:FlxSprite = new FlxSprite(-500, -600).loadGraphic(Paths.stages('limo/limoOverlay'));
 						overlayShit.alpha = 0.5;
@@ -399,7 +399,7 @@ class Stage
 						bgTrees.updateHitbox();
 						treeLeaves.updateHitbox();
 
-						var bgGirls = new BackgroundGirls(-100, 190);
+						/*var bgGirls = new BackgroundDancer(-100, 190,"");
 						bgGirls.scrollFactor.set(0.9, 0.9);
 
 						if (PlayState.SONG.song.toLowerCase() == 'roses')
@@ -416,7 +416,7 @@ class Stage
 						{
 							swagBacks['bgGirls'] = bgGirls;
                             toAdd.push(bgGirls);
-						}
+						}*/
 					}
 				case 'schoolEvil':
 					{

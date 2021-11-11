@@ -35,13 +35,14 @@ class KeyBindMenu extends FlxSubState
     var keyTextDisplay:FlxText;
     var keyWarning:FlxText;
     var warningTween:FlxTween;
-    var keyText:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT","6 Left","6 Right","RESET"];
-    var defaultKeys:Array<String> = ["A", "S", "W", "D","LEFT","RIGHT", "R"];
+    var keyText:Array<String> = ["LEFT", "DOWN", "MIDDLE", "UP", "RIGHT","6 Left","6 Right","RESET"];
+    var defaultKeys:Array<String> = ["A", "S", "MIDDLE", "W", "D","LEFT","RIGHT", "R"];
     var defaultGpKeys:Array<String> = ["DPAD_LEFT", "DPAD_DOWN", "DPAD_UP", "DPAD_RIGHT",'R'];
     var curSelected:Int = 0;
 
     var keys:Array<String> = [FlxG.save.data.leftBind,
                               FlxG.save.data.downBind,
+                              FlxG.save.data.middleBind,
                               FlxG.save.data.upBind,
                               FlxG.save.data.rightBind,
                               FlxG.save.data.sixLeftBind,
@@ -281,11 +282,16 @@ class KeyBindMenu extends FlxSubState
 
     function save(){
 
-        FlxG.save.data.upBind = keys[2];
-        FlxG.save.data.downBind = keys[1];
+        // ["LEFT", "DOWN", "MIDDLE", "UP", "RIGHT","6 Left","6 Right","RESET"]
+        
         FlxG.save.data.leftBind = keys[0];
-        FlxG.save.data.rightBind = keys[3];
-        FlxG.save.data.killBind = keys[4];
+        FlxG.save.data.downBind = keys[1];
+        FlxG.save.data.middleBind = keys[2];
+        FlxG.save.data.upBind = keys[3];
+        FlxG.save.data.rightBind = keys[4];
+        FlxG.save.data.sixLeftBind = keys[5];
+        FlxG.save.data.sixRightBind = keys[6];
+        FlxG.save.data.killBind = keys[7];
         
         FlxG.save.data.gpupBind = gpKeys[2];
         FlxG.save.data.gpdownBind = gpKeys[1];

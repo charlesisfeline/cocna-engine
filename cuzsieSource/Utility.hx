@@ -115,4 +115,17 @@ class Utility
 				return FlxColor.WHITE;
 		}
 	}
+
+
+
+	public function getKeyTex(keyAmmount:Int, currentKey:Int)
+	{
+		// shut up, i hate this code aswell. dont question it
+
+		switch(keyAmmount)
+		{
+			case 1:
+				// lmaoo one key fun
+		}
+	}
 }

@@ -46,7 +46,7 @@ class Song
 	public var speed:Float = 1;
 	public var dadFlyX:Float = 0.1;
 	public var dadHasTrail:Bool = false;
-	public var hasDialogue:Bool = false;
+	public var shasDialogue:Bool = false;
 	public var keyAmmount:Int = 4;
 
 	public var player1:String = 'bf';

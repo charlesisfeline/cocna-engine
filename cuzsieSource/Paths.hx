@@ -106,7 +106,7 @@ class Paths
 		var songLowercase = StringTools.replace(song, " ", "-").toLowerCase();
 		songLowercase = Utility.songLowercase(songLowercase);
 
-		return 'songs:songs/${songLowercase}/Voices.$SOUND_EXT';
+		return 'assets/songs/${songLowercase}/Voices.$SOUND_EXT';
 	}
 
 	inline static public function inst(song:String)
@@ -114,7 +114,7 @@ class Paths
 		var songLowercase = StringTools.replace(song, " ", "-").toLowerCase();
 		songLowercase = Utility.songLowercase(songLowercase);
 
-		return 'songs:songs/${songLowercase}/Inst.$SOUND_EXT';
+		return 'assets/songs/${songLowercase}/Inst.$SOUND_EXT';
 	}
 
 	inline static public function image(key:String, ?library:String)

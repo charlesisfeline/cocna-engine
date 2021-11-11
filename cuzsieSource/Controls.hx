@@ -18,6 +18,7 @@ enum abstract Action(String) to String from String
 	var SixKeyLeft = "6kleft";
 	var UP = "up";
 	var LEFT = "left";
+	var MIDDLE = "space";
 	var RIGHT = "right";
 	var DOWN = "down";
 	var SixKeyRight = "6kRight";
@@ -26,6 +27,7 @@ enum abstract Action(String) to String from String
 	var SixKeyLeft_P = "6kLeft-press";
 	var UP_P = "up-press";
 	var LEFT_P = "left-press";
+	var MIDDLE_P = "space-press";
 	var RIGHT_P = "right-press";
 	var DOWN_P = "down-press";
 	var SixKeyRight_P = "6kRight-press";
@@ -34,6 +36,7 @@ enum abstract Action(String) to String from String
 	var SixKeyLeft_R = "6kLeft-release";
 	var UP_R = "up-release";
 	var LEFT_R = "left-release";
+	var MIDDLE_R = "space-release";
 	var RIGHT_R = "right-release";
 	var DOWN_R = "down-release";
 	var SixKeyRight_R = "6kRight-release";
@@ -52,6 +55,7 @@ abstract Action(String) to String from String
 	var SixKeyLeft = "6kleft";
 	var UP = "up";
 	var LEFT = "left";
+	var MIDDLE = "space";
 	var RIGHT = "right";
 	var DOWN = "down";
 	var SixKeyRight = "6kRight";
@@ -60,6 +64,7 @@ abstract Action(String) to String from String
 	var SixKeyLeft_P = "6kLeft-press";
 	var UP_P = "up-press";
 	var LEFT_P = "left-press";
+	var MIDDLE_P = "space-press";
 	var RIGHT_P = "right-press";
 	var DOWN_P = "down-press";
 	var SixKeyRight_P = "6kRight-press";
@@ -68,6 +73,7 @@ abstract Action(String) to String from String
 	var SixKeyLeft_R = "6kLeft-release";
 	var UP_R = "up-release";
 	var LEFT_R = "left-release";
+	var MIDDLE_P = "space-release";
 	var RIGHT_R = "right-release";
 	var DOWN_R = "down-release";
 	var SixKeyRight_R = "6kRight-release";
@@ -97,6 +103,7 @@ enum Control
 	SixKeyLeft;
 	UP;
 	LEFT;
+	MIDDLE;
 	RIGHT;
 	DOWN;
 	SixKeyRight;
@@ -124,6 +131,7 @@ class Controls extends FlxActionSet
 	var _6kleft = new FlxActionDigital(Action.SixKeyLeft);
 	var _up = new FlxActionDigital(Action.UP);
 	var _left = new FlxActionDigital(Action.LEFT);
+	var _middle = new FlxActionDigital(Action.MIDDLE);
 	var _right = new FlxActionDigital(Action.RIGHT);
 	var _down = new FlxActionDigital(Action.DOWN);
 	var _6kright = new FlxActionDigital(Action.SixKeyRight);
@@ -132,6 +140,7 @@ class Controls extends FlxActionSet
 	var _6kleftP = new FlxActionDigital(Action.SixKeyLeft_P);
 	var _upP = new FlxActionDigital(Action.UP_P);
 	var _leftP = new FlxActionDigital(Action.LEFT_P);
+	var _middleP = new FlxActionDigital(Action.MIDDLE_P);
 	var _rightP = new FlxActionDigital(Action.RIGHT_P);
 	var _downP = new FlxActionDigital(Action.DOWN_P);
 	var _6krightP = new FlxActionDigital(Action.SixKeyRight_P);
@@ -140,6 +149,7 @@ class Controls extends FlxActionSet
 	var _6kleftR = new FlxActionDigital(Action.SixKeyLeft_R);
 	var _upR = new FlxActionDigital(Action.UP_R);
 	var _leftR = new FlxActionDigital(Action.LEFT_R);
+	var _middleR = new FlxActionDigital(Action.MIDDLE_R);
 	var _rightR = new FlxActionDigital(Action.RIGHT_R);
 	var _downR = new FlxActionDigital(Action.DOWN_R);
 	var _6krightR = new FlxActionDigital(Action.SixKeyRight_R);
@@ -177,6 +187,11 @@ class Controls extends FlxActionSet
 	inline function get_LEFT()
 		return _left.check();
 
+	public var MIDDLE(get, never):Bool;
+
+	inline function get_MIDDLE()
+		return _middle.check();
+
 	public var RIGHT(get, never):Bool;
 
 	inline function get_RIGHT()
@@ -208,6 +223,12 @@ class Controls extends FlxActionSet
 
 	inline function get_LEFT_P()
 		return _leftP.check();
+	
+	
+	public var MIDDLE_P(get, never):Bool;
+
+	inline function get_MIDDLE_P()
+		return _middleP.check();
 
 	public var RIGHT_P(get, never):Bool;
 
@@ -237,6 +258,11 @@ class Controls extends FlxActionSet
 
 	inline function get_UP_R()
 		return _upR.check();
+
+	public var MIDDLE_R(get, never):Bool;
+
+	inline function get_MIDDLE_R()
+		return _middleR.check();
 
 	public var LEFT_R(get, never):Bool;
 
@@ -293,6 +319,7 @@ class Controls extends FlxActionSet
 		add(_6kleft);
 		add(_up);
 		add(_left);
+		add(_middle);
 		add(_right);
 		add(_down);
 		add(_6kright);
@@ -301,6 +328,7 @@ class Controls extends FlxActionSet
 		add(_6kleftP);
 		add(_upP);
 		add(_leftP);
+		add(_middleP);
 		add(_rightP);
 		add(_downP);
 		add(_6krightP);
@@ -309,6 +337,7 @@ class Controls extends FlxActionSet
 		add(_6kleftR);
 		add(_upR);
 		add(_leftR);
+		add(_middleR);
 		add(_rightR);
 		add(_downR);
 		add(_6krightR);
@@ -333,6 +362,7 @@ class Controls extends FlxActionSet
 		add(_6kleft);
 		add(_up);
 		add(_left);
+		add(_middle);
 		add(_right);
 		add(_down);
 		add(_6kright);
@@ -341,6 +371,7 @@ class Controls extends FlxActionSet
 		add(_6kleftP);
 		add(_upP);
 		add(_leftP);
+		add(_middleP);
 		add(_rightP);
 		add(_downP);
 		add(_6krightP);
@@ -349,6 +380,7 @@ class Controls extends FlxActionSet
 		add(_6kleftR);
 		add(_upR);
 		add(_leftR);
+		add(_middleR);
 		add(_rightR);
 		add(_downR);
 		add(_6krightR);
@@ -407,6 +439,7 @@ class Controls extends FlxActionSet
 			case SixKeyLeft: _6kleft;
 			case UP: _up;
 			case DOWN: _down;
+			case MIDDLE: _middle;
 			case LEFT: _left;
 			case RIGHT: _right;
 			case SixKeyRight: _6kright;
@@ -454,6 +487,10 @@ class Controls extends FlxActionSet
 				func(_left, PRESSED);
 				func(_leftP, JUST_PRESSED);
 				func(_leftR, JUST_RELEASED);
+			case MIDDLE:
+				func(_middle, PRESSED);
+				func(_middleP, JUST_PRESSED);
+				func(_middleR, JUST_RELEASED);
 			case RIGHT:
 				func(_right, PRESSED);
 				func(_rightP, JUST_PRESSED);
@@ -696,10 +733,16 @@ class Controls extends FlxActionSet
 
 		buttons.set(Control.SixKeyLeft,[FlxGamepadInputID.fromString(FlxG.save.data.gpsixleftbind)]);
 		buttons.set(Control.SixKeyRight,[FlxGamepadInputID.fromString(FlxG.save.data.gpsixrightbind)]);
+		
 		buttons.set(Control.UP,[FlxGamepadInputID.fromString(FlxG.save.data.gpupBind)]);
+		
 		buttons.set(Control.LEFT,[FlxGamepadInputID.fromString(FlxG.save.data.gpleftBind)]);
+		
+		buttons.set(Control.MIDDLE,[FlxGamepadInputID.fromString(FlxG.save.data.gpMiddleBind)]);
+		
 		buttons.set(Control.DOWN,[FlxGamepadInputID.fromString(FlxG.save.data.gpdownBind)]);
 		buttons.set(Control.RIGHT,[FlxGamepadInputID.fromString(FlxG.save.data.gprightBind)]);
+	
 		buttons.set(Control.ACCEPT,[FlxGamepadInputID.A]);
 		buttons.set(Control.BACK,[FlxGamepadInputID.B]);
 		buttons.set(Control.PAUSE,[FlxGamepadInputID.START]);
@@ -710,6 +753,7 @@ class Controls extends FlxActionSet
 		inline bindKeys(Control.SixKeyRight, [FlxKey.fromString(FlxG.save.data.sixRightBind), FlxKey.L]);
 		inline bindKeys(Control.UP, [FlxKey.fromString(FlxG.save.data.upBind), FlxKey.UP]);
 		inline bindKeys(Control.DOWN, [FlxKey.fromString(FlxG.save.data.downBind), FlxKey.DOWN]);
+		inline bindKeys(Control.MIDDLE, [FlxKey.fromString(FlxG.save.data.middleBind), FlxKey.DOWN]);
 		inline bindKeys(Control.LEFT, [FlxKey.fromString(FlxG.save.data.leftBind), FlxKey.LEFT]);
 		inline bindKeys(Control.RIGHT, [FlxKey.fromString(FlxG.save.data.rightBind), FlxKey.RIGHT]);
 		inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);

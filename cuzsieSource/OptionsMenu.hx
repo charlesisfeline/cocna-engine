@@ -36,7 +36,7 @@ class OptionsMenu extends MusicBeatState
 			new GhostTapOption("Tapping a direction doesnt miss"),
 			new ScrollSpeedOption("Change the speed that the notes scroll at"),
 			new AccuracyDOption("Change how accuracy is calculated. (Accurate = Simple, Complex = Milisecond Based)"),
-			new BotPlay("Showcase your charts and mods with autoplay."),
+			new BotPlay("Showcase your charts and mods with auto."),
 			new ScoreScreen("Show the score screen after the end of a song"),
 			new ShowInput("Display every single input in the score screen."),
 			new Optimization("No backgrounds, no characters, centered notes, no player 2."),
@@ -50,7 +50,7 @@ class OptionsMenu extends MusicBeatState
 		]),
 		new OptionCategory("Input", [
 			new DFJKOption(controls),
-			new Judgement("Customize your Hit Timings (LEFT or RIGHT)"),
+			new Judgement("Customize your Hit Timings"),
 			new ResetButtonOption("Toggle pressing R to gameover."),
 		]),
 		new OptionCategory("Appearance", [
@@ -69,6 +69,10 @@ class OptionsMenu extends MusicBeatState
 			new SuddenDeathOption("Dont miss... ever."),
 			new NoMissOption("Misses disabled."),
 			new AmplifiedMisses("Misses deal more damage"),
+		]),
+
+		new OptionCategory("Developer", [
+			new NewWeek("Edit and Create Weeks"),
 		]),
 		
 	];

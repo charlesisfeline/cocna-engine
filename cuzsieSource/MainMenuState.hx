@@ -263,8 +263,6 @@ class MainMenuState extends MusicBeatState
 						{
 							case 'skin':
 							FlxG.switchState(new CharacterSelectState());
-							case 'song':
-							FlxG.switchState(new ChartingState());
 						}
 					});
 				}
@@ -300,22 +298,7 @@ class MainMenuState extends MusicBeatState
 			hasInnitiated = true;
 			trace("it worked lmao");
 		}
-
-
-		#if debug
-		if(FlxG.keys.justPressed.SIX)
-		{
-			PlayState.isNewTypeChart = true;
-			FlxG.sound.play(Paths.sound('confirmMenu'));
-		}
-		if(FlxG.keys.justPressed.ONE)
-		{
-			FlxG.switchState(new CampaignStoryMenuState());
-		}
-		#end
-		
 	
-
 		menuItems.forEach(function(spr:FlxSprite)
 		{
 			if(!FlxG.mouse.overlaps(spr))
@@ -416,8 +399,6 @@ class MainMenuState extends MusicBeatState
 			{
 				case 'skin':
 					FlxG.switchState(new CharacterSelectState());
-				case 'song':
-					FlxG.switchState(new ChartingState());
 			}
 		}
 		else

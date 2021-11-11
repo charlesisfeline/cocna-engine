@@ -9,7 +9,6 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 
-// This is for the debug mode animation debug!
 class AnimationDebug extends FlxState
 {
 	var bf:Boyfriend;

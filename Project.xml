@@ -37,7 +37,7 @@
 	
 	<assets path="assets/preload/stages" rename="assets/stages" library="stages"/> <!-- Stages -->
 	<assets path="assets/songs" library="songs" exclude="*.ogg" if="web"/> <!-- Songs -->
-	<assets path='mods' embed='false'/> <!-- Mods -->
+	<assets path='game_mods' rename="mods" embed='false'/> <!-- Mods -->
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/> <!-- Preload (Embedded) -->
 	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/> <!-- Preload (Embedded) -->
 	<assets path="assets/shared"   library="shared"   exclude="*.ogg" if="web" embed='true'/> <!-- Shared (Embedded) -->
@@ -53,10 +53,12 @@
 	<section if="PRELOAD_ALL">
 		<library name="songs"    preload="true" />
 		<library name="shared"   preload="true" />
+		<library name="mods"   preload="true" />
 	</section>
 	<section if="NO_PRELOAD_ALL">
 		<library name="songs"    preload="false" />
 		<library name="shared"   preload="false" />
+		<library name="mods"   preload="false" />
 	</section>	
 
 	<!-- _______________________________ Libraries ______________________________ -->

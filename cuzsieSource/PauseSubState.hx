@@ -191,8 +191,8 @@ class PauseSubState extends MusicBeatSubstate
 						}
 
 						GlobalData.latestDiff = PlayState.storyDifficulty;
-						ChartingState.fromSongMenu = false;
-						FlxG.switchState(new ChartingState());
+						editors.ChartingState.fromSongMenu = false;
+						FlxG.switchState(new editors.ChartingState());
 
 
 					case "Options":

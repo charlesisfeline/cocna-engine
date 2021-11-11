@@ -27,6 +27,10 @@ class ModchartState
 
 	public static var lua:State = null;
 
+	public var type:String;
+
+	public var typeName:String = null;
+
 	function callLua(func_name : String, args : Array<Dynamic>, ?type : String) : Dynamic
 	{
 		var result : Any = null;
@@ -45,7 +49,7 @@ class ModchartState
 		{
 			if (p != null)
 				{
-					Application.current.window.alert("LUA ERROR:\n" + p + "\nhaxe things: " + e,"Kade Engine Modcharts");
+					Application.current.window.alert("LUA ERROR:\n" + p + "\nhaxe things: " + e,"Cuzsie Engine: Lua Error");
 					lua = null;
 					LoadingState.loadAndSwitchState(new MainMenuState());
 				}
@@ -351,11 +355,8 @@ class ModchartState
 
     function new()
     {
-        		trace('opening a lua state (because we are cool :))');
 				lua = LuaL.newstate();
 				LuaL.openlibs(lua);
-				trace("Lua version: " + Lua.version());
-				trace("LuaJIT version: " + Lua.versionJIT());
 				Lua.init_callbacks(lua);
 				
 				//shaders = new Array<LuaShader>();
@@ -366,8 +367,45 @@ class ModchartState
 					case 'dad-battle': songLowercase = 'dadbattle';
 					case 'philly-nice': songLowercase = 'philly';
 				}
+				
+				var result;
 
-				var result = LuaL.dofile(lua, Paths.lua(songLowercase + "/modchart")); // execute le file
+				switch(type)
+				{
+					case "modchart":
+						result = LuaL.dofile(lua, Paths.lua(songLowercase + "/modchart")); // execute le file
+					case "note":
+						if (typeName != null)	
+						{
+							result = LuaL.dofile(lua, "mods/note_types/" + typeName + "/data.lua"); // execute le file
+						}
+						else if (typeName == null || typeName == "default")
+						{
+							result = LuaL.dofile(lua, "mods/note_types/DONT DELETE.lua");
+							return;
+						}
+						else 
+						{
+							result = LuaL.dofile(lua, "mods/note_types/DONT DELETE.lua");
+							return;
+						}
+						
+					default:
+						if (typeName != null)	
+						{
+							result = LuaL.dofile(lua, "mods/note_types/" + typeName + "/data.lua"); // execute le file
+						}
+						else if (typeName == null || typeName == "default")
+						{
+							result = LuaL.dofile(lua, "mods/note_types/DONT DELETE.lua");
+							return;
+						}
+						else
+						{
+							result = LuaL.dofile(lua, "mods/note_types/DONT DELETE.lua");
+							return;
+						}
+				}
 	
 				if (result != 0)
 				{
@@ -910,9 +948,13 @@ class ModchartState
         return Lua.tostring(lua,callLua(name, args));
     }
 
-    public static function createModchartState():ModchartState
+    public static function createModchartState(type:String, typeName = null):ModchartState
     {
-        return new ModchartState();
+        var modchart = new ModchartState();
+		modchart.type = type;
+		modchart.typeName = typeName;
+
+		return modchart;
     }
 }
 #end

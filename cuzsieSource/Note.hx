@@ -9,6 +9,12 @@ import flixel.util.FlxColor;
 #if polymod
 import polymod.format.ParseRules.TargetSignatureElement;
 #end
+
+#if windows
+import Sys;
+import sys.FileSystem;
+#end
+
 import PlayState;
 
 using StringTools;
@@ -24,9 +30,10 @@ class Note extends FlxSprite
 	public var wasGoodHit:Bool = false;
 	public var prevNote:Note;
 	public var modifiedByLua:Bool = false;
-	public var isCustomNote:Bool = false;
+	public var isCustomNote:Bool = false; // If the note is one of the user created custom notes
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
+	public var inCharter:Bool;
 
 	public var noteScore:Float = 1;
 
@@ -40,12 +47,27 @@ class Note extends FlxSprite
 
 	public var rating:String = "shit";
 	public var noteType:String = "normal";
+	public var customNoteName:String = '';
+
+	#if windows
+	public var customNoteData:ModchartState;
+	#end
 
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inCharter:Bool = false, noteType:String = "normal")
 	{
 		super();
 
-		this.noteType = noteType;
+		this.noteType = noteType;	
+		this.inCharter = inCharter;	
+		this.customNoteName = noteType;
+		#if windows
+		isCustomNote = FileSystem.exists("mods/note_types/" + customNoteName + '/data.lua'); // if the file exists
+		customNoteData = ModchartState.createModchartState("note", customNoteName);
+		customNoteData.executeState('onNoteSpawn',[customNoteName]);
+		customNoteData.type = "note";
+		#else
+		isCustomNote = false; // no custom notes for you BITCH
+		#end
 
 		if (prevNote == null)
 		{
@@ -55,7 +77,7 @@ class Note extends FlxSprite
 		this.prevNote = prevNote; 
 		isSustainNote = sustainNote;
 
-		x += 50; // Put the note off-screen
+		x += 150; // Put the note off-screen
 		y -= 2000; // Put the note off-screen
 		
 		if (inCharter)
@@ -79,80 +101,26 @@ class Note extends FlxSprite
 
 		var noteTypeCheck:String = 'normal'; // The note style
 
-		switch (noteTypeCheck)
-		{
-			case 'pixel':
-				loadGraphic(Paths.image('notes/NotesPixel','preload'), true, 17, 17);
+		frames = Paths.getSparrowAtlas("notes/Notes", "preload"); // help why doesnt this work
 
-				animation.add('greenScroll', [6]);
-				animation.add('redScroll', [7]);
-				animation.add('blueScroll', [5]);
-				animation.add('purpleScroll', [4]);
+		animation.addByPrefix('greenScroll', 'Up0');
+		animation.addByPrefix('redScroll', 'Right0');
+		animation.addByPrefix('blueScroll', 'Down0');
+		animation.addByPrefix('purpleScroll', 'Left0');
 
-				if (isSustainNote)
-				{
-					loadGraphic(Paths.image('notes/NotesPixelEnds','preload'), true, 7, 6);
+		animation.addByPrefix('purpleholdend', 'Purple Hold End');
+		animation.addByPrefix('greenholdend', 'Green Hold End');
+		animation.addByPrefix('redholdend', 'Red Hold End');
+		animation.addByPrefix('blueholdend', 'Blue Hold End');
 
-					animation.add('purpleholdend', [4]);
-					animation.add('greenholdend', [6]);
-					animation.add('redholdend', [7]);
-					animation.add('blueholdend', [5]);
+		animation.addByPrefix('purplehold', 'Purple Hold');
+		animation.addByPrefix('greenhold', 'Green Hold');
+		animation.addByPrefix('redhold', 'Red Hold');
+		animation.addByPrefix('bluehold', 'Blue Hold');
 
-					animation.add('purplehold', [0]);
-					animation.add('greenhold', [2]);
-					animation.add('redhold', [3]);
-					animation.add('bluehold', [1]);
-				}
-
-				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
-				updateHitbox();
-
-			case 'glitch':
-				frames = Paths.getSparrowAtlas('notes/NotesWeird','preload');
-
-				animation.addByPrefix('greenScroll', 'green0');
-				animation.addByPrefix('redScroll', 'red0');
-				animation.addByPrefix('blueScroll', 'blue0');
-				animation.addByPrefix('purpleScroll', 'purple0');
-
-				animation.addByPrefix('purpleholdend', 'pruple end hold');
-				animation.addByPrefix('greenholdend', 'green hold end');
-				animation.addByPrefix('redholdend', 'red hold end');
-				animation.addByPrefix('blueholdend', 'blue hold end');
-
-				animation.addByPrefix('purplehold', 'purple hold piece');
-				animation.addByPrefix('greenhold', 'green hold piece');
-				animation.addByPrefix('redhold', 'red hold piece');
-				animation.addByPrefix('bluehold', 'blue hold piece');
-
-				setGraphicSize(Std.int(width * 0.7));
-				updateHitbox();
-				antialiasing = true;
-
-
-		default:
-			
-			frames = Paths.getSparrowAtlas("notes/Notes", "preload");
-
-				animation.addByPrefix('greenScroll', 'green0');
-				animation.addByPrefix('redScroll', 'red0');
-				animation.addByPrefix('blueScroll', 'blue0');
-				animation.addByPrefix('purpleScroll', 'purple0');
-
-				animation.addByPrefix('purpleholdend', 'pruple end hold');
-				animation.addByPrefix('greenholdend', 'green hold end');
-				animation.addByPrefix('redholdend', 'red hold end');
-				animation.addByPrefix('blueholdend', 'blue hold end');
-
-				animation.addByPrefix('purplehold', 'purple hold piece');
-				animation.addByPrefix('greenhold', 'green hold piece');
-				animation.addByPrefix('redhold', 'red hold piece');
-				animation.addByPrefix('bluehold', 'blue hold piece');
-
-				setGraphicSize(Std.int(width * 0.7));
-				updateHitbox();
-				antialiasing = true;
-		}
+		setGraphicSize(Std.int(width * 0.7));
+		updateHitbox();
+		antialiasing = true;
 
 		switch (noteData)
 		{
@@ -243,6 +211,11 @@ class Note extends FlxSprite
 	{
 		super.update(elapsed);
 
+
+		if (isCustomNote && !inCharter)
+		{
+			PlayState.instance.setHealth(customNoteData.getVar('health','float'));
+		}
 		if (mustPress)
 		{
 			// ass

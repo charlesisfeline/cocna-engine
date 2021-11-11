@@ -20,6 +20,7 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import flixel.FlxObject;
 
 
 #if windows
@@ -31,6 +32,7 @@ using StringTools;
 class FreeplayState extends MusicBeatState
 {
 	public static var songs:Array<SongMetadata> = [];
+	public var group:Array<Dynamic> = [];
 
 	public static var currentSelected:Int = 0;
 	public static var currentDifficulty:Int = 1;
@@ -130,6 +132,13 @@ class FreeplayState extends MusicBeatState
 
 		for (i in 0...songs.length)
 		{
+			// var elements:Array<FlxObject> = [];
+			
+			/*var songBG:FlxSprite = new FlxSprite(-700,(70 * i) + 30).loadGraphic(Paths.image("ui/songBG", "preload"));
+			songBG.color = FlxColor.BLACK;
+			songBG.setGraphicSize(550,191);
+			elements.push(songBG);*/
+			
 			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].songName, true, false, true);
 			songText.isMenuItem = true;
 			songText.targetY = i;
@@ -140,6 +149,17 @@ class FreeplayState extends MusicBeatState
 
 			iconArray.push(icon);
 			add(icon);
+
+
+			/*for (i in elements)
+			{
+				add(i);
+			}
+			group.push(elements);*/
+
+			/*var tab:SongTab = new SongTab(0,0);
+			tab.screenCenter();
+			add(tab);*/
 
 			loadedSongs++;
 		}
@@ -324,8 +344,8 @@ class FreeplayState extends MusicBeatState
 			GlobalData.latestDiff = currentDifficulty;
 	
 			PlayState.SONG = hmm;
-			ChartingState.fromSongMenu = true;
-			FlxG.switchState(new ChartingState());
+			editors.ChartingState.fromSongMenu = true;
+			FlxG.switchState(new editors.ChartingState());
 		}
 	}
 
@@ -381,10 +401,10 @@ class FreeplayState extends MusicBeatState
 			iconArray[i].alpha = 0.6;
 		}
 
-		if (songs[currentSelected].songName != "create new song")
+		/*if (songs[currentSelected].songName != "create new song")
 		{
 			iconArray[currentSelected].alpha = 1;
-		}
+		}*/
 		
 
 		for (item in grpSongs.members)

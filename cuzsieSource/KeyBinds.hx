@@ -16,38 +16,50 @@ class KeyBinds
 
     public static function resetBinds():Void{
 
-        FlxG.save.data.sixLeftBind = "LEFT";
-        FlxG.save.data.sixRightBind = "RIGHT";
+        FlxG.save.data.sixLeftBind = "S";
+       
+        FlxG.save.data.sixRightBind = "L";
+        
         FlxG.save.data.upBind = "W";
+        
         FlxG.save.data.downBind = "S";
-        FlxG.save.data.leftBind = "A";
-        FlxG.save.data.rightBind = "D";
-        FlxG.save.data.killBind = "R";
-        FlxG.save.data.gpupBind = "DPAD_UP";
-        FlxG.save.data.gpdownBind = "DPAD_DOWN";
-        FlxG.save.data.gpleftBind = "DPAD_LEFT";
-        FlxG.save.data.gprightBind = "DPAD_RIGHT";
-        PlayerSettings.player1.controls.loadKeyBinds();
 
+        FlxG.save.data.middleBind = "SPACE";
+        
+        FlxG.save.data.leftBind = "A";
+       
+        FlxG.save.data.rightBind = "D";
+       
+        FlxG.save.data.killBind = "R";
+        
+        FlxG.save.data.gpupBind = "DPAD_UP";
+        
+        FlxG.save.data.gpdownBind = "DPAD_DOWN";
+       
+        FlxG.save.data.gpleftBind = "DPAD_LEFT";
+        
+        FlxG.save.data.gprightBind = "DPAD_RIGHT";
+       
+        PlayerSettings.player1.controls.loadKeyBinds();
 	}
 
     public static function keyCheck():Void
     {
         if(FlxG.save.data.sixLeftBind == null){
-            FlxG.save.data.sixLeftBind = "LEFT";
+            FlxG.save.data.sixLeftBind = "S";
             trace("No SLeft");
         }
         if(FlxG.save.data.sixRightBind == null){
-            FlxG.save.data.sixRightBind = "RIGHT";
+            FlxG.save.data.sixRightBind = "L";
             trace("No SRight");
         }
         if(FlxG.save.data.upBind == null){
             FlxG.save.data.upBind = "W";
             trace("No UP");
         }
-        if(FlxG.save.data.upBind == null){
-            FlxG.save.data.upBind = "W";
-            trace("No UP");
+        if(FlxG.save.data.middleBind == null){
+            FlxG.save.data.middleBind = "SPACE";
+            trace("No MIDDLE");
         }
         if (StringTools.contains(FlxG.save.data.upBind,"NUMPAD"))
             FlxG.save.data.upBind = "W";
@@ -87,7 +99,40 @@ class KeyBinds
             trace("No GRIGHT");
         }
 
-        trace('${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}');
+        trace
+        (
+            'Keybinds: \n\n\n
+           
+            4 Key:\n
+            ${FlxG.save.data.leftBind}-
+            ${FlxG.save.data.downBind}-
+            ${FlxG.save.data.upBind}-
+            ${FlxG.save.data.rightBind}\n\n
+            
+            5 Key: \n
+            ${FlxG.save.data.leftBind}-
+            ${FlxG.save.data.downBind}-
+            ${FlxG.save.data.middleBind}-
+            ${FlxG.save.data.upBind}-
+            ${FlxG.save.data.rightBind}\n\n
+            
+            6 Key:\n
+            ${FlxG.save.data.sixLeftBind}-
+            ${FlxG.save.data.leftBind}-
+            ${FlxG.save.data.downBind}-
+            ${FlxG.save.data.upBind}-
+            ${FlxG.save.data.rightBind}
+            ${FlxG.save.data.sixRightBind}\n\n
+            
+            7 Key:\n
+            ${FlxG.save.data.sixLeftBind}-
+            ${FlxG.save.data.leftBind}-
+            ${FlxG.save.data.downBind}-
+            ${FlxG.save.data.middleBind}-
+            ${FlxG.save.data.upBind}-
+            ${FlxG.save.data.rightBind}
+            ${FlxG.save.data.sixRightBind}\n\n'
+        );
     }
 
 }
