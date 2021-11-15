@@ -104,6 +104,8 @@ class Ratings
             rating = "bad";
         if (ms > -166 * ts && ms <= -135 * ts)
             rating = "shit";
+        if (ms < 10 * ts && ms >= -10 * ts)
+            rating = "marvelous";
         return rating;
     }
 

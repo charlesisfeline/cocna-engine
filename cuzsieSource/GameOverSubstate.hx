@@ -21,6 +21,8 @@ class GameOverSubstate extends MusicBeatSubstate
 		var daStage = PlayState.curStage;
 		var daBf:String = '';
 
+		Lib.application.window.title = GlobalData.globalWindowTitle + " - GAME OVER";
+
 		FlxG.mouse.visible = true;
 
 
@@ -82,16 +84,14 @@ class GameOverSubstate extends MusicBeatSubstate
 			if (controls.ACCEPT)
 			{
 				endBullshit();
+				Lib.application.window.title = GlobalData.globalWindowTitle;
 			}
 		
 			if (controls.BACK)
 			{
 				FlxG.sound.music.stop();
 		
-				if (PlayState.SONG.song == "broken")
-				{
-					Lib.application.window.title = "Friday Night Funkin': The Cuzsie Mod";
-				}
+				Lib.application.window.title = GlobalData.globalWindowTitle;
 					
 				if (PlayState.isStoryMode)
 					FlxG.switchState(new StoryMenuState());

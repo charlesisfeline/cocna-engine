@@ -73,7 +73,27 @@ class Option
 	public function right():Bool { return throw "stub!"; }
 }
 
-
+class FullScreenOption extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+	
+	public override function press():Bool
+	{
+		FlxG.fullscreen = !FlxG.fullscreen;
+			
+		display = updateDisplay();
+		return true;
+	}
+	
+	private override function updateDisplay():String
+	{
+		return FlxG.fullscreen ? "Fullscreen On" : "Fullscreen Off";
+	}
+}
 
 class DFJKOption extends Option
 {
@@ -86,7 +106,7 @@ class DFJKOption extends Option
 	}
 
 	public override function press():Bool
-	{
+	{ 
 		OptionsMenu.instance.openSubState(new KeyBindMenu());
 		return false;
 	}

@@ -45,6 +45,7 @@ class OptionsMenu extends MusicBeatState
 		new OptionCategory("Graphics", [
 			#if desktop
 			new FPSCapOption("Cap your FPS"),
+			new FullScreenOption("Enable fullscreened mode")
 			#end
 
 		]),

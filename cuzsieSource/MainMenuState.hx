@@ -21,6 +21,18 @@ import io.newgrounds.NG;
 import lime.app.Application;
 import Song;
 
+
+
+import flixel.group.FlxGroup;
+import flixel.graphics.FlxGraphic;
+import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.addons.transition.TransitionData;
+import flixel.math.FlxPoint;
+import flixel.math.FlxRect;
+import openfl.Assets;
+import flixel.addons.display.FlxBackdrop;
+
 #if windows
 import Discord.DiscordClient;
 #end
@@ -32,24 +44,36 @@ class MainMenuState extends MusicBeatState
 	var curSelected:Int = 0;
 	var currentSelectedSidebar:Int = 0;
 
+	static var initialized:Bool = false;
+	var blackScreen:FlxSprite;
+	var credGroup:FlxGroup;
+	var credTextShit:Alphabet;
+	var textGroup:FlxGroup;
+	var curWacky:Array<String> = [];
+	var wackyImage:FlxSprite;
+	var skippedIntro:Bool = false;
+	var danceLeft:Bool = false;
+
+
 	var menuItems:FlxTypedGroup<FlxSprite>;
-	#if !switch
-	var optionShit:Array<String> = ['story mode', 'freeplay', 'replays', 'options'];
-	#else
-	var optionShit:Array<String> = ['story mode', 'freeplay'];
-	#end
+	var optionShit:Array<String> = 
+	[
+		'story mode', 
+		'freeplay', 
+		'replays', 
+		'options'
+	];
 	
-	#if !switch
-	var sideButtons:Array<String> = ['skin','song'];
-	#else
-	var sideButtons:Array<String> = ['skin'];
-	#end
+	var sideButtons:Array<String> = 
+	[
+		'skin'
+	];
 	var sideItems:FlxTypedGroup<FlxSprite>;
 
 	var newGaming:FlxText;
 	var newGaming2:FlxText;
 	public static var firstStart:Bool = true;
-	public static var kadeEngineVer:String = "1.0";
+	public static var kadeEngineVer:String = "1.0 (Beta)";
 	public static var gameVer:String = "0.2.7.1"; 
 	var camFollow:FlxObject;
 	public static var finishedFunnyMove:Bool = false;
@@ -59,10 +83,12 @@ class MainMenuState extends MusicBeatState
 	var hasInnitiated = false;
 	var logoBl:FlxSprite;
 	var titleText:FlxSprite;
+	var checkeredBackground:FlxBackdrop;
 
 	override function create()
 	{
 		FlxG.save.bind('cuzsiemod_data', 'cuzsiedev'); 
+		KadeEngineData.initSave();
 
 		FlxG.mouse.visible = true;
 		Conductor.changeBPM(102);
@@ -92,11 +118,15 @@ class MainMenuState extends MusicBeatState
 
 		persistentUpdate = persistentDraw = true;
 
-		var bg:FlxSprite = new FlxSprite(0).loadGraphic(Paths.image('ui/Backgrounds/skyBG', "preload"));
+		var bg:FlxSprite = new FlxSprite(0).loadGraphic(Paths.image('ui/Backgrounds/MainBG', "preload"));
 		bg.scrollFactor.set(0.1, 0.1);
 		bg.screenCenter();
+		bg.setGraphicSize(1920,1080);
 		add(bg);
 
+		checkeredBackground = new FlxBackdrop(Paths.image('ui/checkeredBG', "preload"), 0.2, 0.2, true, true);
+		add(checkeredBackground);
+		checkeredBackground.scrollFactor.set(0, 0.07);
 		
 		camFollow = new FlxObject(0, 0, 1, 1);
 		add(camFollow);
@@ -155,11 +185,9 @@ class MainMenuState extends MusicBeatState
 
 		firstStart = false;
 
-		FlxG.camera.follow(camFollow, null, 0.60 * (60 / FlxG.save.data.fpsCap));
 
-
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, gameVer +  "Cuzsie Engine - Version " + kadeEngineVer);
-
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 25, 0, "Cuzsie Engine " + kadeEngineVer);
+		versionShit.antialiasing = true;
 		versionShit.scrollFactor.set();
 		versionShit.setFormat(Paths.font("opensans.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -181,10 +209,11 @@ class MainMenuState extends MusicBeatState
 		logoBl.animation.addByPrefix('bump', 'Start Screen BG art', 24);
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
+		logoBl.screenCenter(X);
 		add(logoBl);
 
 
-		titleText = new FlxSprite(0,logoBl.y + 100);
+		titleText = new FlxSprite(0,600);
 		titleText.frames = Paths.getSparrowAtlas('title/EnterToBegin');
 		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
 		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
@@ -194,9 +223,11 @@ class MainMenuState extends MusicBeatState
 		titleText.screenCenter(X);
 		add(titleText);
 
-		FlxTween.tween(logoBl,{y: -500, x:-500}, 1.4, {ease: FlxEase.expoInOut});
+		FlxTween.tween(logoBl,{y: -185}, 1, {ease: FlxEase.expoInOut});
 
 		super.create();
+
+		FlxG.camera.flash(FlxColor.WHITE, 4);
 	}
 
 	var selectedSomethin:Bool = false;
@@ -228,7 +259,8 @@ class MainMenuState extends MusicBeatState
 				}
 				else
 				{
-					FlxTween.tween(FlxG.camera, {zoom: 5}, 1, {ease: FlxEase.expoIn});
+					FlxTween.tween(FlxG.camera, {zoom: 20}, 1, {ease: FlxEase.expoIn});
+					FlxTween.tween(FlxG.camera, {angle: 90}, 1, {ease: FlxEase.expoIn});
 					FlxG.camera.fade(FlxColor.BLACK, 1, false);
 					new FlxTimer().start(1.1, function(tmr:FlxTimer)
 					{
@@ -252,7 +284,8 @@ class MainMenuState extends MusicBeatState
 				}
 				else
 				{
-					FlxTween.tween(FlxG.camera, {zoom: 5}, 1, {ease: FlxEase.expoIn});
+					FlxTween.tween(FlxG.camera, {zoom: 20}, 1, {ease: FlxEase.expoIn});
+					FlxTween.tween(FlxG.camera, {angle: 90}, 1, {ease: FlxEase.expoIn});
 					FlxG.camera.fade(FlxColor.BLACK, 1, false);
 					
 					new FlxTimer().start(1.1, function(tmr:FlxTimer)
@@ -275,8 +308,11 @@ class MainMenuState extends MusicBeatState
 	{
 		menuItems.forEach(function(spr:FlxSprite)
 		{
-			FlxTween.tween(logoBl,{y: -540, x: -250}, 1.4, {ease: FlxEase.expoInOut});
-			FlxTween.tween(titleText,{y: 1500}, 1.4, {ease: FlxEase.expoInOut});
+			var swagScale:Float = titleText.scale - 50;
+
+			FlxTween.tween(logoBl,{y: -185, x: 400}, 1, {ease: FlxEase.expoInOut});
+			FlxTween.tween(titleText,{y: 1500}, 1, {ease: FlxEase.expoInOut});
+			FlxTween.tween(titleText,{scale: swagScale}, 1, {ease: FlxEase.expoInOut});
 			
 			FlxTween.tween(spr,{y: 60 + (spr.ID * 160)},2,{ease: FlxEase.expoInOut, onComplete: function(flxTween:FlxTween) 
 			{ 
@@ -288,9 +324,12 @@ class MainMenuState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		if (FlxG.sound.music.volume < 0.8)
-		{
+		{ 
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
+
+		checkeredBackground.x -= 0.45 / (100 / 60);
+		checkeredBackground.y -= 0.16 / (100 / 60);
 
 		if(FlxG.keys.justPressed.ENTER && !hasInnitiated)
 		{
@@ -298,7 +337,14 @@ class MainMenuState extends MusicBeatState
 			hasInnitiated = true;
 			trace("it worked lmao");
 		}
-	
+
+		#if debug
+		if (FlxG.keys.justPressed.NINE)
+		{
+			FlxG.state.openSubState(new DevDebugMenu());
+		}
+		#end
+
 		menuItems.forEach(function(spr:FlxSprite)
 		{
 			if(!FlxG.mouse.overlaps(spr))

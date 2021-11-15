@@ -21,7 +21,10 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import flixel.FlxObject;
-
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxGroup;
+import openfl.Lib;
+import flixel.FlxBasic;
 
 #if windows
 import Discord.DiscordClient;
@@ -53,7 +56,7 @@ class FreeplayState extends MusicBeatState
 	var bg:FlxSprite;
 
 	
-	private var grpSongs:FlxTypedGroup<Alphabet>;
+	private var grpSongs:Array<Array<FlxObject>>;
 	private var curPlaying:Bool = false;
 
 	private var iconArray:Array<HealthIcon> = [];
@@ -61,6 +64,11 @@ class FreeplayState extends MusicBeatState
 	public static var openedPreview = false;
 
 	public static var songData:Map<String,Array<SwagSong>> = [];
+
+	var difficultySelectors:FlxGroup;
+	var sprDifficulty:FlxSprite;
+	var leftArrow:FlxSprite;
+	var rightArrow:FlxSprite;
 
 	public static function loadDiff(diff:Int, format:String, name:String, array:Array<SwagSong>)
 	{
@@ -86,10 +94,11 @@ class FreeplayState extends MusicBeatState
 		
 		#if debug
 		isDebug = true;
-		#end
+		#end 
 
 		#if windows
 		DiscordClient.changePresence("In the Songs Menu", null);
+		Lib.application.window.title = GlobalData.globalWindowTitle + " - In the song menu";
 		#end
 
 		#if sys
@@ -97,6 +106,8 @@ class FreeplayState extends MusicBeatState
 		#else
 		var initSonglist = Utility.coolTextFile(Paths.txt('data/freeplaySonglist'));
 		#end
+
+		var ui_tex = Paths.getSparrowAtlas('ui/CampaignAssets');
 
 		for (i in 0...initSonglist.length)
 		{
@@ -124,52 +135,42 @@ class FreeplayState extends MusicBeatState
 		bg = new FlxSprite().loadGraphic(Paths.image('ui/Backgrounds/BackgroundFreeplay', 'preload'));
 		add(bg);
 
-		grpSongs = new FlxTypedGroup<Alphabet>();
-		add(grpSongs);
+		grpSongs = new Array<Array<FlxObject>>();
+		
 
 		var loadedSongs:Int = 0;
 
-
+	
 		for (i in 0...songs.length)
-		{
-			// var elements:Array<FlxObject> = [];
+		{			
+			var elements:Array<FlxObject> = [];
 			
-			/*var songBG:FlxSprite = new FlxSprite(-700,(70 * i) + 30).loadGraphic(Paths.image("ui/songBG", "preload"));
-			songBG.color = FlxColor.BLACK;
-			songBG.setGraphicSize(550,191);
-			elements.push(songBG);*/
-			
-			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].songName, true, false, true);
-			songText.isMenuItem = true;
-			songText.targetY = i;
-			grpSongs.add(songText);
+			var songBG:FlxSprite = new FlxSprite(100,(70 * i) + 30).loadGraphic(Paths.image("ui/songBG", "preload"));
+			songBG.screenCenter();
+			songBG.x + 100;
+			songBG.y + i;
+			// songBG.y = i;
+			songBG.setGraphicSize(900,200);
+			songBG.color = FlxColor.GRAY;
+			elements.push(songBG);
 
-			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
-			icon.sprTracker = songText;
-
-			iconArray.push(icon);
-			add(icon);
+			var songText:FlxText = new FlxText(songBG.x, songBG.y, 0, songs[i].songName, 40);
+			songText.setFormat(null,40,FlxColor.BLACK);
+			elements.push(songText);
 
 
-			/*for (i in elements)
-			{
-				add(i);
-			}
-			group.push(elements);*/
-
-			/*var tab:SongTab = new SongTab(0,0);
-			tab.screenCenter();
-			add(tab);*/
-
+			grpSongs.push(elements);
 			loadedSongs++;
 		}
+
+		for(groups in grpSongs)
+		{
+			for (item in groups)
+			{
+				add(item);
+			}
+		}
 		
-		var newSongMeta = new SongMetadata("create new song",0,null);
-		songs.push(newSongMeta);
-		var newSongText:Alphabet = new Alphabet(0, (70 * loadedSongs) + 30, "create new song", true, false, true);
-		newSongText.isMenuItem = true;
-		newSongText.targetY = loadedSongs;
-		grpSongs.add(newSongText);
 
 		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
@@ -191,7 +192,41 @@ class FreeplayState extends MusicBeatState
 		add(comboText);
 
 		add(scoreText);
-	
+		
+
+		difficultySelectors = new FlxGroup();
+		add(difficultySelectors);
+
+		trace("Line 124");
+
+		leftArrow = new FlxSprite(-500,500);
+		leftArrow.frames = ui_tex;
+		leftArrow.animation.addByPrefix('idle', "arrow left");
+		leftArrow.animation.addByPrefix('press', "arrow push left");
+		leftArrow.animation.play('idle');
+		difficultySelectors.add(leftArrow);
+
+		sprDifficulty = new FlxSprite(leftArrow.x + 130, leftArrow.y);
+		sprDifficulty.frames = ui_tex;
+		sprDifficulty.animation.addByPrefix('easy', 'EASY');
+		sprDifficulty.animation.addByPrefix('normal', 'NORMAL');
+		sprDifficulty.animation.addByPrefix('hard', 'HARD');
+		sprDifficulty.animation.play('easy');
+		changeDiff();
+
+		difficultySelectors.add(sprDifficulty);
+
+		rightArrow = new FlxSprite(sprDifficulty.x + sprDifficulty.width + 50, leftArrow.y);
+		rightArrow.frames = ui_tex;
+		rightArrow.animation.addByPrefix('idle', 'arrow right');
+		rightArrow.animation.addByPrefix('press', "arrow push right", 24, false);
+		rightArrow.animation.play('idle');
+		difficultySelectors.add(rightArrow);
+
+		trace("Line 150");
+
+
+
 		super.create();
 		
 		changeSelection();
@@ -221,6 +256,7 @@ class FreeplayState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
 
 		if (FlxG.sound.music.volume < 0.7)
 		{
@@ -287,6 +323,7 @@ class FreeplayState extends MusicBeatState
 
 		if (controls.BACK)
 		{
+			Lib.application.window.title = GlobalData.globalWindowTitle;
 			FlxG.switchState(new MainMenuState());
 		}
 
@@ -360,6 +397,28 @@ class FreeplayState extends MusicBeatState
 		
 		GlobalData.latestDiff = currentDifficulty;
 
+		switch (currentDifficulty)
+		{
+			case 0:
+				sprDifficulty.animation.play('easy');
+				sprDifficulty.offset.x = 20;
+			case 1:
+				sprDifficulty.animation.play('normal');
+				sprDifficulty.offset.x = 70;
+			case 2:
+				sprDifficulty.animation.play('hard');
+				sprDifficulty.offset.x = 70;
+			case 3:
+				sprDifficulty.animation.play('insane');
+				sprDifficulty.offset.x = 70;
+			case 4:
+				sprDifficulty.animation.play('expert');
+				sprDifficulty.offset.x = 70;
+		}
+
+		sprDifficulty.alpha = 0;
+		sprDifficulty.y = leftArrow.y - 15;
+
 		// adjusting the highscore song name to be compatible (changeDiff)
 		var songHighscore = StringTools.replace(songs[currentSelected].songName, " ", "-");
 		songHighscore = Utility.songLowercase(songHighscore);
@@ -400,26 +459,15 @@ class FreeplayState extends MusicBeatState
 		{
 			iconArray[i].alpha = 0.6;
 		}
-
-		/*if (songs[currentSelected].songName != "create new song")
-		{
-			iconArray[currentSelected].alpha = 1;
-		}*/
 		
 
-		for (item in grpSongs.members)
+		for (item in grpSongs)
 		{
-			item.targetY = bullShit - currentSelected;
-			bullShit++;
-
-			item.alpha = 0.6;
-			// item.setGraphicSize(Std.int(item.width * 0.8));
-
-			if (item.targetY == 0)
+			for(i in item)
 			{
-				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
+				i.y = bullShit - currentSelected * 20;
 			}
+			bullShit++;
 		}
 
 		try 

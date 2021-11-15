@@ -5,7 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxGroup.FlxTypedGroup; 
 import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
@@ -13,6 +13,7 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.net.curl.CURLCode;
+import flixel.addons.display.FlxBackdrop;
 
 #if windows
 import Discord.DiscordClient;
@@ -27,7 +28,7 @@ class StoryMenuState extends MusicBeatState
 	var weekData:Array<Dynamic> =
 	[
 		['Tutorial-Remix'],
-		['Morningtime', 'See-you-again', 'Holding-back', 'Broken', "Dreamland"],
+		['Cuzsie-swing', 'See-you-again', 'Holding-back', 'Broken', "Dreamland"],
 		['rampage'],
 		['']
 	];
@@ -55,6 +56,7 @@ class StoryMenuState extends MusicBeatState
 	var leftArrow:FlxSprite;
 	var rightArrow:FlxSprite;
 	var weekArt:FlxSprite;
+	var checkeredBackground:FlxBackdrop;
 
 	override function create()
 	{
@@ -74,7 +76,7 @@ class StoryMenuState extends MusicBeatState
 		}
 
 		
-		var bg = new FlxSprite(-100).loadGraphic(Paths.image('ui/Backgrounds/BackgroundFreeplay', 'preload'));
+		var bg = new FlxSprite(-100).loadGraphic(Paths.image('ui/Backgrounds/StageBG', 'preload'));
 		bg.scrollFactor.x = 0;
 		bg.scrollFactor.y = 0;
 		bg.setGraphicSize(Std.int(bg.width * 1.1));
@@ -82,6 +84,10 @@ class StoryMenuState extends MusicBeatState
 		bg.screenCenter();
 		bg.antialiasing = true;
 		add(bg);
+
+		checkeredBackground = new FlxBackdrop(Paths.image('ui/checkeredBG', "preload"), 0.2, 0.2, true, true);
+		add(checkeredBackground);
+		checkeredBackground.scrollFactor.set(0, 0.07);
 
 		persistentUpdate = persistentDraw = true;
 
@@ -208,6 +214,10 @@ class StoryMenuState extends MusicBeatState
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.5));
 
 		scoreText.text = "WEEK SCORE:" + lerpScore;
+
+
+		checkeredBackground.x -= 0.45 / (100 / 60);
+		checkeredBackground.y -= 0.16 / (100 / 60);
 
 
 		txtWeekTitle.text = weekNames[curWeek].toUpperCase();
