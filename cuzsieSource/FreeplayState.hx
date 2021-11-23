@@ -25,6 +25,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import openfl.Lib;
 import flixel.FlxBasic;
+import flixel.addons.display.FlxBackdrop;
 
 #if windows
 import Discord.DiscordClient;
@@ -36,6 +37,7 @@ class FreeplayState extends MusicBeatState
 {
 	public static var songs:Array<SongMetadata> = [];
 	public var group:Array<Dynamic> = [];
+	var initSonglist:Array<String> = [];
 
 	public static var currentSelected:Int = 0;
 	public static var currentDifficulty:Int = 1;
@@ -70,6 +72,11 @@ class FreeplayState extends MusicBeatState
 	var leftArrow:FlxSprite;
 	var rightArrow:FlxSprite;
 
+	var followTarget:FlxObject;
+	var prevCamFollow:FlxObject;
+
+	var checkeredBackground:FlxBackdrop;
+
 	public static function loadDiff(diff:Int, format:String, name:String, array:Array<SwagSong>)
 	{
 		try 
@@ -85,126 +92,106 @@ class FreeplayState extends MusicBeatState
 	}
 
 	override function create()
-	{
-		var isDebug:Bool = false;
+	{		
 		persistentUpdate = true;
 		songData = [];
 		songs = [];
-		
-		
-		#if debug
-		isDebug = true;
-		#end 
 
 		#if windows
 		DiscordClient.changePresence("In the Songs Menu", null);
 		Lib.application.window.title = GlobalData.globalWindowTitle + " - In the song menu";
 		#end
 
-		#if sys
-		var initSonglist = sys.FileSystem.readDirectory("assets/songs");//Utility.coolTextFile(Paths.txt('data/freeplaySonglist'));
-		#else
-		var initSonglist = Utility.coolTextFile(Paths.txt('data/freeplaySonglist'));
-		#end
+		loadTracks();
 
 		var ui_tex = Paths.getSparrowAtlas('ui/CampaignAssets');
 
-		for (i in 0...initSonglist.length)
-		{
-			var data:Array<String> = initSonglist[i].split(':');
-			var meta = new SongMetadata(data[0], Std.parseInt(data[2]), data[1]);
-
-			songs.push(meta);
-			trace(meta);
-			
-			var format = StringTools.replace(meta.songName, " ", "-");
-			format = Utility.songLowercase(format);
-
-			var diffs = [];
-			FreeplayState.loadDiff(0,format,meta.songName,diffs); // Easy
-			FreeplayState.loadDiff(1,format,meta.songName,diffs); // Normal
-			FreeplayState.loadDiff(2,format,meta.songName,diffs); // Hard
-			FreeplayState.loadDiff(3,format,meta.songName,diffs); // Insane
-			FreeplayState.loadDiff(4,format,meta.songName,diffs); // Expert
-			FreeplayState.songData.set(meta.songName,diffs);
-			
-			trace('Difficulties Loaded for ' + meta.songName);
-		}
-
-
 		bg = new FlxSprite().loadGraphic(Paths.image('ui/Backgrounds/BackgroundFreeplay', 'preload'));
-		add(bg);
+		bg.scrollFactor.set();
+
+		checkeredBackground = new FlxBackdrop(Paths.image('ui/checkeredBG', "preload"), 0.2, 0.2, true, true);
+		checkeredBackground.scrollFactor.set();
+
+		followTarget = new FlxObject(0, 0, 1, 1);
+		followTarget.setPosition(FlxG.camera.x + 850, FlxG.camera.y);
+		if (prevCamFollow != null)
+		{
+			followTarget = prevCamFollow;
+			prevCamFollow = null;
+		}
+		FlxG.camera.follow(followTarget, LOCKON, 5000);
+		FlxG.camera.focusOn(followTarget.getPosition());
+
 
 		grpSongs = new Array<Array<FlxObject>>();
-		
 
 		var loadedSongs:Int = 0;
-
 	
 		for (i in 0...songs.length)
 		{			
 			var elements:Array<FlxObject> = [];
 			
-			var songBG:FlxSprite = new FlxSprite(100,(70 * i) + 30).loadGraphic(Paths.image("ui/songBG", "preload"));
-			songBG.screenCenter();
-			songBG.x + 100;
-			songBG.y + i;
-			// songBG.y = i;
+			var songBG:FlxSprite = new FlxSprite(0,i * 250).loadGraphic(Paths.image("ui/songBG", "preload"));
+			songBG.screenCenter(X);
+			songBG.x + 140;
 			songBG.setGraphicSize(900,200);
+			songBG.updateHitbox();
 			songBG.color = FlxColor.GRAY;
-			elements.push(songBG);
 
-			var songText:FlxText = new FlxText(songBG.x, songBG.y, 0, songs[i].songName, 40);
+			var songSelector:FlxSprite = new FlxSprite(0,i * 250).loadGraphic(Paths.image("ui/songBG", "preload"));
+			songSelector.screenCenter(X);
+			songSelector.x + 140;
+			songSelector.setGraphicSize(920,220);
+			songSelector.updateHitbox();
+			songSelector.color = FlxColor.GRAY;
+
+			var songText:FlxText = new FlxText(230, songBG.y + 40, 0, songs[i].songName, 40);
 			songText.setFormat(null,40,FlxColor.BLACK);
-			elements.push(songText);
+			songBG.screenCenter(X);
 
+
+			var icon:FlxSprite = new FlxSprite(songText.x + 600, songText.y + 5).loadGraphic("assets/songs/" + songs[i].songName.toLowerCase() + "/icon.png");
+			icon.setGraphicSize(150,150);
+			icon.updateHitbox();
+			
+			elements.push(songSelector);
+			elements.push(songBG);
+			elements.push(songText);
+			elements.push(icon);
 
 			grpSongs.push(elements);
+
 			loadedSongs++;
 		}
 
-		for(groups in grpSongs)
-		{
-			for (item in groups)
-			{
-				add(item);
-			}
-		}
-		
-
 		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+		scoreText.scrollFactor.set();
 
 		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width * 0.35), 105, 0xFF000000);
 		scoreBG.alpha = 0.6;
-		add(scoreBG);
+		scoreBG.scrollFactor.set();
+
 
 		diffText = new FlxText(scoreText.x, scoreText.y + 36, 0, "", 24);
 		diffText.font = scoreText.font;
-		add(diffText);
+		diffText.scrollFactor.set();
 
 		instruct = new FlxText(scoreText.x, scoreText.y + 650, 0, "Left click to play\nRight click to edit", 24);
 		instruct.font = scoreText.font;
-		add(instruct);
+		instruct.scrollFactor.set();
 
 		comboText = new FlxText(diffText.x + 100, diffText.y, 0, "", 24);
 		comboText.font = diffText.font;
-		add(comboText);
-
-		add(scoreText);
-		
+		comboText.scrollFactor.set();
 
 		difficultySelectors = new FlxGroup();
-		add(difficultySelectors);
-
-		trace("Line 124");
 
 		leftArrow = new FlxSprite(-500,500);
 		leftArrow.frames = ui_tex;
 		leftArrow.animation.addByPrefix('idle', "arrow left");
 		leftArrow.animation.addByPrefix('press', "arrow push left");
 		leftArrow.animation.play('idle');
-		difficultySelectors.add(leftArrow);
 
 		sprDifficulty = new FlxSprite(leftArrow.x + 130, leftArrow.y);
 		sprDifficulty.frames = ui_tex;
@@ -212,25 +199,37 @@ class FreeplayState extends MusicBeatState
 		sprDifficulty.animation.addByPrefix('normal', 'NORMAL');
 		sprDifficulty.animation.addByPrefix('hard', 'HARD');
 		sprDifficulty.animation.play('easy');
-		changeDiff();
-
-		difficultySelectors.add(sprDifficulty);
 
 		rightArrow = new FlxSprite(sprDifficulty.x + sprDifficulty.width + 50, leftArrow.y);
 		rightArrow.frames = ui_tex;
 		rightArrow.animation.addByPrefix('idle', 'arrow right');
 		rightArrow.animation.addByPrefix('press', "arrow push right", 24, false);
 		rightArrow.animation.play('idle');
+
+		add(bg);
+		add(checkeredBackground);
+		add(followTarget);
+		add(scoreBG);
+		add(diffText);
+		add(instruct);
+		add(comboText);
+		add(scoreText);
+		add(difficultySelectors);
+		difficultySelectors.add(leftArrow);
+		difficultySelectors.add(sprDifficulty);
 		difficultySelectors.add(rightArrow);
+		for(groups in grpSongs)
+		{
+			for (item in groups)
+			{
+				add(item);
+			}
+		}
 
-		trace("Line 150");
-
-
-
-		super.create();
-		
 		changeSelection();
 		changeDiff();
+
+		super.create();
 	}
 
 	public function addSong(songName:String, weekNum:Int, songCharacter:String)
@@ -257,6 +256,8 @@ class FreeplayState extends MusicBeatState
 	{
 		super.update(elapsed);
 
+		checkeredBackground.x -= 0.45 / (100 / 60);
+		checkeredBackground.y -= 0.16 / (100 / 60);
 
 		if (FlxG.sound.music.volume < 0.7)
 		{
@@ -307,11 +308,11 @@ class FreeplayState extends MusicBeatState
 
 		if (upP)
 		{
-			changeSelection(-1);
+			changeSelection(-1, "up");
 		}
 		if (downP)
 		{
-			changeSelection(1);
+			changeSelection(1, "down");
 		}
 
 
@@ -430,45 +431,27 @@ class FreeplayState extends MusicBeatState
 		diffText.text = Utility.difficultyFromInt(currentDifficulty).toUpperCase();
 	}
 
-	function changeSelection(change:Int = 0)
+	function changeSelection(change:Int = 0, direction:String = "down")
 	{
+		var songHighscore = StringTools.replace(songs[currentSelected].songName, " ", "-");
+		songHighscore = Utility.songLowercase(songHighscore);
+		var bullShit:Int = 0;
+		var selectorToRemove:Int;
+		
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
-
-
 		currentSelected += change;
+
+		FlxG.sound.playMusic(Paths.inst(songs[currentSelected].songName));
+		
 
 		if (currentSelected < 0)
 			currentSelected = songs.length - 1;
 		if (currentSelected >= songs.length)
 			currentSelected = 0;
 
-
-		var songHighscore = StringTools.replace(songs[currentSelected].songName, " ", "-");
-		songHighscore = Utility.songLowercase(songHighscore);
-
-		#if !switch
-		intendedScore = Highscore.getScore(songHighscore, currentDifficulty);
-		combo = Highscore.getCombo(songHighscore, currentDifficulty);
-		// lerpScore = 0;
-		#end
-
-		var bullShit:Int = 0;
-
-		for (i in 0...iconArray.length)
-		{
-			iconArray[i].alpha = 0.6;
-		}
+		followTarget.y = grpSongs[currentSelected][0].y + 100; // ig just like put the pos of camera on the first element in the objs (prob the bg)
 		
-
-		for (item in grpSongs)
-		{
-			for(i in item)
-			{
-				i.y = bullShit - currentSelected * 20;
-			}
-			bullShit++;
-		}
 
 		try 
 		{
@@ -476,7 +459,41 @@ class FreeplayState extends MusicBeatState
 		}
 		catch(ex)
 		{
-			trace("Background Color: Null Object Refrence");
+			// no
+		}
+	}
+
+
+	function loadTracks()
+	{
+		#if sys
+		initSonglist = sys.FileSystem.readDirectory("assets/songs");//Utility.coolTextFile(Paths.txt('data/freeplaySonglist'));
+		#else
+		initSonglist = Utility.coolTextFile(Paths.txt('data/freeplaySonglist'));
+		#end
+
+		var ui_tex = Paths.getSparrowAtlas('ui/CampaignAssets');
+
+		for (i in 0...initSonglist.length)
+		{
+			var data:Array<String> = initSonglist[i].split(':');
+			var meta = new SongMetadata(data[0], Std.parseInt(data[2]), data[1]);
+
+			songs.push(meta);
+			trace(meta);
+			
+			var format = StringTools.replace(meta.songName, " ", "-");
+			format = Utility.songLowercase(format);
+
+			var diffs = [];
+			FreeplayState.loadDiff(0,format,meta.songName,diffs); // Easy
+			FreeplayState.loadDiff(1,format,meta.songName,diffs); // Normal
+			FreeplayState.loadDiff(2,format,meta.songName,diffs); // Hard
+			FreeplayState.loadDiff(3,format,meta.songName,diffs); // Insane
+			FreeplayState.loadDiff(4,format,meta.songName,diffs); // Expert
+			FreeplayState.songData.set(meta.songName,diffs);
+			
+			trace('Difficulties Loaded for ' + meta.songName);
 		}
 	}
 }

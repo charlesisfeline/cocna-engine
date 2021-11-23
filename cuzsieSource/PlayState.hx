@@ -1963,6 +1963,8 @@ class PlayState extends MusicBeatState
 	public var stopUpdate = false;
 	public var removedVideo = false;
 
+	public var centeredNoteFuck:Bool = false;
+
 	override public function update(elapsed:Float)
 	{
 		#if !debug
@@ -2127,7 +2129,15 @@ class PlayState extends MusicBeatState
 			var xVal = Std.int(windowX + thisX);
 			moveWindow(xVal,yVal);
 		}
-	
+		
+		if (SONG.song == 'broken' && generatedMusic) // FUCK with the notes
+		{
+			playerStrums.forEach(function(spr:FlxSprite)
+			{
+				spr.x = Math.sin(spr.x);
+				spr.y = Math.sin(spr.x);
+			});
+		}
 
 		scoreTxt.text = Ratings.CalculateRanking(songScore,songScoreDef,nps,maxNPS,accuracy);
 		scoreTxt.screenCenter(X);
@@ -3024,7 +3034,7 @@ class PlayState extends MusicBeatState
 	
 			songScore += Math.round(score);
 			songScoreDef += Math.round(ConvertScore.convertScore(noteDiff));
-	
+			
 			var pixelShitPart1:String = "";
 			var pixelShitPart2:String = '';
 	

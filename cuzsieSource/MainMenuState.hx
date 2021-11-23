@@ -308,11 +308,9 @@ class MainMenuState extends MusicBeatState
 	{
 		menuItems.forEach(function(spr:FlxSprite)
 		{
-			var swagScale:Float = titleText.scale - 50;
-
+			titleText.animation.play('press');
 			FlxTween.tween(logoBl,{y: -185, x: 400}, 1, {ease: FlxEase.expoInOut});
 			FlxTween.tween(titleText,{y: 1500}, 1, {ease: FlxEase.expoInOut});
-			FlxTween.tween(titleText,{scale: swagScale}, 1, {ease: FlxEase.expoInOut});
 			
 			FlxTween.tween(spr,{y: 60 + (spr.ID * 160)},2,{ease: FlxEase.expoInOut, onComplete: function(flxTween:FlxTween) 
 			{ 
