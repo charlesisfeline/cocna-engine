@@ -140,6 +140,27 @@ class CpuStrums extends Option
 
 }
 
+class NoteSkins extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		OptionsMenu.instance.openSubState(new NoteSkinSelector());
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "Change Noteskins";
+	}
+
+}
+
 class NewWeek extends Option
 {
 	public function new(desc:String)

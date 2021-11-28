@@ -9,6 +9,9 @@ class KadeEngineData
         if (FlxG.save.data.newInput == null)
 			FlxG.save.data.newInput = true;
 
+		if (FlxG.save.data.noteSkin == null)
+			FlxG.save.data.noteSkin = "Arrows";
+
 		if (FlxG.save.data.downscroll == null)
 			FlxG.save.data.downscroll = false;
 

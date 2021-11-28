@@ -43,6 +43,7 @@ class OptionsMenu extends MusicBeatState
 			new CustomizeGameplay("Customize the location of UI Elements")
 		]),
 		new OptionCategory("Graphics", [
+			new NoteSkins("Change the texture of the notes"),
 			#if desktop
 			new FPSCapOption("Cap your FPS"),
 			new FullScreenOption("Enable fullscreened mode")
