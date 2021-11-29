@@ -244,6 +244,11 @@ class PlayState extends MusicBeatState
 		{
 			(cast (Lib.current.getChildAt(0), Main)).setFPSCap(800);
 		}
+
+		if (FlxG.save.data.noteSkin == null)
+		{
+			FlxG.save.data.noteSkin = "Default";
+		}
 		
 		// Disable music if music is disabled
 		if (FlxG.sound.music != null)
@@ -1699,7 +1704,7 @@ class PlayState extends MusicBeatState
 				noteTypeCheck = SONG.noteStyle;
 			}
 
-				babyArrow.frames = Paths.getSparrowAtlas('notes/Notes', 'preload');
+				babyArrow.frames = Paths.getSparrowAtlas('notes/Notes_Default', 'preload');
 				babyArrow.animation.addByPrefix('green', 'Up Static');
 				babyArrow.animation.addByPrefix('blue', 'Down Static');
 				babyArrow.animation.addByPrefix('purple', 'Left Static');
@@ -1839,7 +1844,7 @@ class PlayState extends MusicBeatState
 			babyArrow.updateHitbox();
 			babyArrow.scrollFactor.set();
 
-			if (!isStoryMode)
+			if (!isStoryMode && SONG.song != "broken")
 			{
 				babyArrow.y -= 10;
 				babyArrow.alpha = 0;
@@ -3980,6 +3985,32 @@ class PlayState extends MusicBeatState
 	override function stepHit()
 	{
 		super.stepHit();
+
+
+		if (curStep == 96 && SONG.song == "broken")
+		{
+			cpuStrums.forEach(function(spr:FlxSprite)
+			{
+				FlxTween.tween
+				(
+					spr, 
+					{y: spr.y + 10, alpha: 1},
+					1, 
+					{ease: FlxEase.cubeInOut, startDelay: 5 + (0.2 * 1)}
+				);
+			});
+
+			playerStrums.forEach(function(spr:FlxSprite)
+			{
+				FlxTween.tween
+				(
+					spr, 
+					{y: spr.y + 10, alpha: 1},
+					1, 
+					{ease: FlxEase.cubeInOut, startDelay: 5 + (0.2 * 1)}
+				);
+			});
+		}
 
 		switch (SONG.song)
 		{

@@ -101,7 +101,7 @@ class Note extends FlxSprite
 
 		var noteTypeCheck:String = 'normal'; // The note style
 
-		frames = Paths.getSparrowAtlas("notes/Notes", "preload"); // help why doesnt this work
+		frames = Paths.getSparrowAtlas("notes/Notes_Default", "preload"); // help why doesnt this work
 
 		animation.addByPrefix('greenScroll', 'Up0');
 		animation.addByPrefix('redScroll', 'Right0');

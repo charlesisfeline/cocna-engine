@@ -329,6 +329,12 @@ class MainMenuState extends MusicBeatState
 		checkeredBackground.x -= 0.45 / (100 / 60);
 		checkeredBackground.y -= 0.16 / (100 / 60);
 
+		if(FlxG.keys.justPressed.SEVEN)
+		{	
+			FlxG.switchState(new Credits());
+		}
+
+
 		if(FlxG.keys.justPressed.ENTER && !hasInnitiated)
 		{
 			buttonRise();
