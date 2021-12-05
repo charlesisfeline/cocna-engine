@@ -1,3 +1,4 @@
+// kakyoin
 package editors; 
 
 import flixel.FlxCamera;
@@ -38,9 +39,12 @@ import openfl.net.FileReference;
 import openfl.utils.ByteArray;
 import Stage;
 
+#if windows
+import Discord.DiscordClient;
+#end
+
 using StringTools;
 
-// cuzsie custom chart editor
 class ChartingState extends MusicBeatState
 {
 	var _song:SwagSong;
@@ -105,6 +109,10 @@ class ChartingState extends MusicBeatState
 	override function create()
 	{
 		FlxG.mouse.visible = true;
+
+		#if windows
+		DiscordClient.changePresence("Chart Editor", null, null, true);
+		#end
 		
 		curSection = lastSection;
 
@@ -139,11 +147,25 @@ class ChartingState extends MusicBeatState
 			{name: "Events", label: 'Events'}
 		];
 
-		if (_song.keyAmmount != 6 || _song.keyAmmount != 4 || _song.keyAmmount != 5 ||  _song.keyAmmount == 0)
+		// for debugging that weird ass bug, removing later
+		if 
+		(
+				_song.keyAmmount == 0 || 
+				_song.keyAmmount != 1 || 
+				_song.keyAmmount != 2 || 
+				_song.keyAmmount != 3 || 
+				_song.keyAmmount != 4 || 
+				_song.keyAmmount != 5 || 
+				_song.keyAmmount != 6 || 
+				_song.keyAmmount != 7 || 
+				_song.keyAmmount != 8 || 
+				_song.keyAmmount != 9
+		)
 		{
-			_song.keyAmmount = 4; 
+			_song.keyAmmount = 4;
 		}
-		
+
+
 		gridWidth = _song.keyAmmount * 2;
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * gridWidth, GRID_SIZE * 16);
 		gridBG.screenCenter(X);
@@ -755,7 +777,7 @@ class ChartingState extends MusicBeatState
 				if (nums.value <= 0)
 					nums.value = 1;
 				_song.keyAmmount = Std.int(nums.value);
-				
+				updateGrid();
 			}
 			else if (wname == 'note_susLength')
 			{

@@ -338,7 +338,7 @@ class PlayState extends MusicBeatState
 		}
 
 		detailsPausedText = "Paused - " + detailsText;
-		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficultyText + ") " + Ratings.GenerateLetterRank(accuracy), "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses  , iconRPC);
+		DiscordClient.changePresence(detailsText + " " + SONG.song,"\nAccuracy: " + HelperFunctions.truncateFloat(accuracy, 2) +  "% ( " + Ratings.GenerateLetterRank(accuracy) + " )", iconRPC);
 		#end
 
 		
@@ -842,11 +842,7 @@ class PlayState extends MusicBeatState
 		trace('Song Starting...');
 
 		// Start the dialogue
-		if (SONG.song == "broken")
-		{
-			brokenCutscene();
-		}
-		else if (SONG.hasDialogue)
+		if (SONG.hasDialogue && isStoryMode)
 		{
 			startDialogue(dialogueBox);
 		}
@@ -1486,7 +1482,7 @@ class PlayState extends MusicBeatState
 		
 		// Updates discord RPC with time left
 		#if windows
-		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficultyText + ") " + Ratings.GenerateLetterRank(accuracy), "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses  , iconRPC);
+		DiscordClient.changePresence(detailsText + " " + SONG.song,"\nAccuracy: " + HelperFunctions.truncateFloat(accuracy, 2) +  "% ( " + Ratings.GenerateLetterRank(accuracy) + " )", iconRPC);
 		#end
 	}
 	var debugNum:Int = 0;
@@ -1695,152 +1691,20 @@ class PlayState extends MusicBeatState
 			{
 				continue;
 			}
-			if (SONG.noteStyle == null) 
-			{
-				noteTypeCheck = 'normal';
-			}
-			else 
-			{
-				noteTypeCheck = SONG.noteStyle;
-			}
 
-				babyArrow.frames = Paths.getSparrowAtlas('notes/Notes_Default', 'preload');
-				babyArrow.animation.addByPrefix('green', 'Up Static');
-				babyArrow.animation.addByPrefix('blue', 'Down Static');
-				babyArrow.animation.addByPrefix('purple', 'Left Static');
-				babyArrow.animation.addByPrefix('red', 'RightStatic');
-				babyArrow.antialiasing = true;
-				babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
 
-				switch (Math.abs(i))
-				{
-					// Note 1
-					case 0:
-						if (keyAmmount > 4)
-						{
-							babyArrow.x += Note.swagWidth * 0;
-						}
-						else
-						{
-							babyArrow.x += Note.swagWidth * 0;
-						}
-						
+			babyArrow.frames = Paths.getSparrowAtlas('notes/Notes_' + FlxG.save.data.noteSkin, 'preload');
+			babyArrow.animation.addByPrefix('green', 'Up Static');
+			babyArrow.animation.addByPrefix('blue', 'Down Static');
+			babyArrow.animation.addByPrefix('purple', 'Left Static');
+			babyArrow.animation.addByPrefix('red', 'RightStatic');
+			babyArrow.antialiasing = true;
+			babyArrow.setGraphicSize(Std.int(babyArrow.width * NoteData.sizes[keys]));
 
-						babyArrow.animation.addByPrefix('static', 'Left Static');
-						babyArrow.animation.addByPrefix('pressed', 'Left Pressed', 24, false);
-						babyArrow.animation.addByPrefix('confirm', 'Left Hit', 24, false);
-					
-					// Note 2
-					case 1:
-						if (keyAmmount > 4)
-						{
-							babyArrow.x += Note.swagWidth * 0.7;
-						}
-						else
-						{
-							babyArrow.x += Note.swagWidth * 1;
-						}
-						babyArrow.animation.addByPrefix('static', 'Down Static');
-						babyArrow.animation.addByPrefix('pressed', 'Down Pressed', 24, false);
-						babyArrow.animation.addByPrefix('confirm', 'Down Hit', 24, false); 
-						
-					// Note 3
-					case 2:
-						if (keyAmmount > 4)
-						{
-							babyArrow.x += Note.swagWidth * 1.4;
-						}
-						else
-						{
-							babyArrow.x += Note.swagWidth * 2;
-						}
-						if (keyAmmount == 6)
-						{
-							babyArrow.animation.addByPrefix('static', 'Right Static');
-							babyArrow.animation.addByPrefix('pressed', 'Right Pressed', 24, false);
-							babyArrow.animation.addByPrefix('confirm', 'Right Hit', 24, false);
-						}
-						else if (keyAmmount == 5)
-						{
-							babyArrow.animation.addByPrefix('static', 'Middle Static');
-							babyArrow.animation.addByPrefix('pressed', 'Middle Pressed', 24, false);
-							babyArrow.animation.addByPrefix('confirm', 'Middle Hit', 24, false);
-						}
-						else
-						{
-							babyArrow.animation.addByPrefix('static', 'Up Static');
-							babyArrow.animation.addByPrefix('pressed', 'Up Pressed', 24, false);
-							babyArrow.animation.addByPrefix('confirm', 'Up Hit', 24, false);
-						}
-					
-					// Note 4
-					case 3:
-						if (keyAmmount > 4)
-						{
-							babyArrow.x += Note.swagWidth * 2.1;
-						}
-						else
-						{
-							babyArrow.x += Note.swagWidth * 3;
-						}
-						if (keyAmmount == 6)
-							{
-								babyArrow.animation.addByPrefix('static', 'Left Static');
-								babyArrow.animation.addByPrefix('pressed', 'Left Pressed', 24, false);
-								babyArrow.animation.addByPrefix('confirm', 'Left Hit', 24, false);
-							}
-							else if (keyAmmount == 5)
-							{
-								babyArrow.animation.addByPrefix('static', 'Up Static');
-								babyArrow.animation.addByPrefix('pressed', 'Up Pressed', 24, false);
-								babyArrow.animation.addByPrefix('confirm', 'Up Hit', 24, false);
-							}
-							else
-							{
-								babyArrow.animation.addByPrefix('static', 'Right Static');
-								babyArrow.animation.addByPrefix('pressed', 'Right Pressed', 24, false);
-								babyArrow.animation.addByPrefix('confirm', 'Right Hit', 24, false);
-							}
-					
-						case 4:
-							if (keyAmmount > 4)
-							{
-									babyArrow.x += Note.swagWidth * 2.8;
-							}
-							else
-							{
-								babyArrow.x += Note.swagWidth * 4;
-							}
-							if (keyAmmount == 5)
-							{
-								babyArrow.animation.addByPrefix('static', 'Right Static');
-								babyArrow.animation.addByPrefix('pressed', 'Right Pressed', 24, false);
-								babyArrow.animation.addByPrefix('confirm', 'Right Hit', 24, false);
-							}
-							else
-							{
-								babyArrow.animation.addByPrefix('static', 'Down Static');
-								babyArrow.animation.addByPrefix('pressed', 'Down Pressed', 24, false);
-								babyArrow.animation.addByPrefix('confirm', 'Down Hit', 24, false);
-							}
-							
-							
-							
-							
-						case 5:
-							if (keyAmmount > 4)
-							{
-								babyArrow.x += Note.swagWidth * 3.5;
-							}
-							else
-							{
-								babyArrow.x += Note.swagWidth * 5;
-							}
-							babyArrow.animation.addByPrefix('static', 'Right Static');
-							babyArrow.animation.addByPrefix('pressed', 'Right Pressed', 24, false);
-							babyArrow.animation.addByPrefix('confirm', 'Right Hit', 24, false);
-						}
-
+			babyArrow.animation.addByPrefix('static', NoteData.staticKeyAnimations[keys][i] + " Static");
+			babyArrow.animation.addByPrefix('pressed', NoteData.staticKeyAnimations[keys][i] + ' Pressed', 24, false);
+			babyArrow.animation.addByPrefix('confirm', NoteData.staticKeyAnimations[keys][i] + " Hit", 24, false);
+			babyArrow.x += Note.swagWidth * NoteData.widths[keys] * i;
 			babyArrow.updateHitbox();
 			babyArrow.scrollFactor.set();
 
@@ -1877,12 +1741,6 @@ class PlayState extends MusicBeatState
 			{
 				babyArrow.x -= 275;
 			}
-				
-			
-			cpuStrums.forEach(function(spr:FlxSprite)
-			{					
-				spr.centerOffsets(); //CPU arrows start out slightly off-center
-			});
 
 			strumLineNotes.add(babyArrow);
 		}
@@ -1904,7 +1762,7 @@ class PlayState extends MusicBeatState
 			}
 
 			#if windows
-			DiscordClient.changePresence("PAUSED on " + SONG.song + " (" + storyDifficultyText + ") " + Ratings.GenerateLetterRank(accuracy), "Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses  , iconRPC);
+			DiscordClient.changePresence(detailsText + " " + SONG.song,"\nAccuracy: " + HelperFunctions.truncateFloat(accuracy, 2) +  "% ( " + Ratings.GenerateLetterRank(accuracy) + " )", iconRPC);
 			#end
 			if (!startTimer.finished)
 				startTimer.active = false;
@@ -1929,11 +1787,11 @@ class PlayState extends MusicBeatState
 			#if windows
 			if (startTimer.finished)
 			{
-				DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficultyText + ") " + Ratings.GenerateLetterRank(accuracy), "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, iconRPC, true, songLength - Conductor.songPosition);
+				DiscordClient.changePresence(detailsText + " " + SONG.song,"\nAccuracy: " + HelperFunctions.truncateFloat(accuracy, 2) +  "% ( " + Ratings.GenerateLetterRank(accuracy) + " )", iconRPC, true, songLength - Conductor.songPosition);
 			}
 			else
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ") " + Ratings.GenerateLetterRank(accuracy), iconRPC);
+				DiscordClient.changePresence(detailsText + " " + SONG.song,"\nAccuracy: " + HelperFunctions.truncateFloat(accuracy, 2) +  "% ( " + Ratings.GenerateLetterRank(accuracy) + " )", iconRPC);
 			}
 			#end
 		}
@@ -1952,7 +1810,7 @@ class PlayState extends MusicBeatState
 		vocals.play();
 
 		#if windows
-		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficultyText + ") " + Ratings.GenerateLetterRank(accuracy), "\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses  , iconRPC);
+		DiscordClient.changePresence(detailsText + " " + SONG.song,"\nAccuracy: " + HelperFunctions.truncateFloat(accuracy, 2) +  "% ( " + Ratings.GenerateLetterRank(accuracy) + " )", iconRPC);
 		#end
 	}
 
@@ -2163,9 +2021,6 @@ class PlayState extends MusicBeatState
 					FlxG.stage.window.onFocusIn.remove(focusIn);
 					removedVideo = true;
 				}
-			#if windows
-			DiscordClient.changePresence("Chart Editor", null, null, true);
-			#end
 			editors.ChartingState.fromSongMenu = false;
 			
 			GlobalData.latestDiff = storyDifficulty;
@@ -2495,7 +2350,7 @@ class PlayState extends MusicBeatState
 
 			#if windows
 			// Game Over doesn't get his own variable because it's only used here
-			DiscordClient.changePresence("GAME OVER -- " + SONG.song + " (" + storyDifficultyText + ") " + Ratings.GenerateLetterRank(accuracy),"\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses  , iconRPC);
+			DiscordClient.changePresence(detailsText + " " + SONG.song,"\nAccuracy: " + HelperFunctions.truncateFloat(accuracy, 2) +  "% ( " + Ratings.GenerateLetterRank(accuracy) + " )", iconRPC);
 			#end
 
 			// FlxG.switchState(new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
@@ -2517,7 +2372,7 @@ class PlayState extends MusicBeatState
 		
 					#if windows
 					// Game Over doesn't get his own variable because it's only used here
-					DiscordClient.changePresence("GAME OVER -f- " + SONG.song + " (" + storyDifficultyText + ") " + Ratings.GenerateLetterRank(accuracy),"\nAcc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses  , iconRPC);
+					DiscordClient.changePresence(detailsText + " " + SONG.song,"\nAccuracy: " + HelperFunctions.truncateFloat(accuracy, 2) +  "% ( " + Ratings.GenerateLetterRank(accuracy) + " )", iconRPC);
 					#end
 		
 					// FlxG.switchState(new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
@@ -2540,9 +2395,6 @@ class PlayState extends MusicBeatState
 			{
 				notes.forEachAlive(function(daNote:Note)
 				{	
-
-					// instead of doing stupid y > FlxG.height
-					// we be men and actually calculate the time :)
 					if (daNote.tooLate)
 					{
 						daNote.active = false;
@@ -2710,14 +2562,6 @@ class PlayState extends MusicBeatState
 								{
 									spr.animation.play('confirm', true);
 								}
-								if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
-								{
-									spr.centerOffsets();
-									//spr.offset.x -= 13;
-									//spr.offset.y -= 13;
-								}
-								else
-									spr.centerOffsets();
 							});
 	
 						#if windows
@@ -2810,7 +2654,7 @@ class PlayState extends MusicBeatState
 			if (spr.animation.finished)
 			{
 				spr.animation.play('static');
-				spr.centerOffsets();
+				// spr.centerOffsets();
 			}
 		});
 
@@ -4039,7 +3883,7 @@ class PlayState extends MusicBeatState
 		songLength = FlxG.sound.music.length;
 
 		// Updating Discord Rich Presence (with Time Left)
-		DiscordClient.changePresence(detailsText + " " + SONG.song + " (" + storyDifficultyText + ") " + Ratings.GenerateLetterRank(accuracy), "Acc: " + HelperFunctions.truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses  , iconRPC,true,  songLength - Conductor.songPosition);
+		DiscordClient.changePresence(detailsText + " " + SONG.song,"\nAccuracy: " + HelperFunctions.truncateFloat(accuracy, 2) +  "% ( " + Ratings.GenerateLetterRank(accuracy) + " )", iconRPC, true, songLength - Conductor.songPosition);
 		#end
 
 	}

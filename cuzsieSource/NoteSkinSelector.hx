@@ -96,9 +96,9 @@ class NoteSkinSelector extends FlxSubState
         if (FlxG.keys.justPressed.ENTER)
         {
             allowInput = false;
+            FlxG.save.bind('cuzsiemod_data', 'cuzsiedev'); // please WORK
             FlxG.sound.play(Paths.sound('confirmMenu'));
             FlxG.save.data.noteSkin = skins[curSelected];
-            FlxG.save.data.flush();
 
             new FlxTimer().start(0.5, function(tmr:FlxTimer)
             {

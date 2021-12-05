@@ -107,7 +107,7 @@ class MainMenuState extends MusicBeatState
 		
 		#if windows
 		DiscordClient.initialize();
-		DiscordClient.changePresence("In the Menus - FNF VS CUZSIE", null);
+		DiscordClient.changePresence("In the Menus", null);
 		#end
 		
 		if (!FlxG.sound.music.playing)

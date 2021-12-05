@@ -36,6 +36,8 @@ using StringTools;
 class FreeplayState extends MusicBeatState
 {
 	public static var songs:Array<SongMetadata> = [];
+	public static var catagories:Array<String> = [];
+	public static var catagorySongs:Array<Array<SongMetadata>> = [];
 	public var group:Array<Dynamic> = [];
 	var initSonglist:Array<String> = [];
 
@@ -98,11 +100,32 @@ class FreeplayState extends MusicBeatState
 		songs = [];
 
 		#if windows
-		DiscordClient.changePresence("In the Songs Menu", null);
+		DiscordClient.changePresence("Selecting a Song", null);
 		Lib.application.window.title = GlobalData.globalWindowTitle + " - In the song menu";
 		#end
 
 		loadTracks();
+
+		for (i in 0...songs.length)
+		{
+			var isSongAndNotCatagory:Bool = false;
+			
+			for(diff in Utility.difficultyArray)
+			{
+				if (!sys.FileSystem.exists("assets/songs/" + songs[i] + '/$diff.funkin'))
+				{
+					isSongAndNotCatagory = true;
+				}
+			}
+
+
+			if (!isSongAndNotCatagory)
+			{
+				trace("catagory found: " + songs[i].songName);
+				catagories.push(songs[i].songName);
+				songs.remove(songs[i]);
+			}
+		}
 
 		var ui_tex = Paths.getSparrowAtlas('ui/CampaignAssets');
 
@@ -126,7 +149,85 @@ class FreeplayState extends MusicBeatState
 		grpSongs = new Array<Array<FlxObject>>();
 
 		var loadedSongs:Int = 0;
+		var loadedCatagories:Int = 0;
 	
+		for (i in 0...catagories.length)
+		{			
+			loadTracks("assets/songs/" + catagories[i] + "/", true, loadedCatagories);
+
+			var elements:Array<FlxObject> = [];
+				
+			var songBG:FlxSprite = new FlxSprite(0,i * 250).loadGraphic(Paths.image("ui/songBG", "preload"));
+			songBG.screenCenter(X);
+			songBG.x + 140;
+			songBG.setGraphicSize(1000,200);
+			songBG.updateHitbox();
+			songBG.color = FlxColor.GRAY;
+
+			var songSelector:FlxSprite = new FlxSprite(0,i * 250).loadGraphic(Paths.image("ui/songBG", "preload"));
+			songSelector.screenCenter(X);
+			songSelector.x + 140;
+			songSelector.setGraphicSize(920,220);
+			songSelector.updateHitbox();
+			songSelector.color = FlxColor.GRAY;
+	
+			var songText:FlxText = new FlxText(230, songBG.y + 40, 0, catagories[i], 40);
+			songText.setFormat(null,40,FlxColor.BLACK);
+			songBG.screenCenter(X);
+				
+			elements.push(songSelector);
+			elements.push(songBG);
+			elements.push(songText);
+	
+			grpSongs.push(elements);
+	
+			loadedSongs++;
+			loadedCatagories++;
+		}
+
+
+		for (i in 0...catagorySongs.length)
+		{			
+			for (songs in 0...catagorySongs[i].length)
+			{
+				var elements:Array<FlxObject> = [];
+				
+				var songBG:FlxSprite = new FlxSprite(0,i * 250).loadGraphic(Paths.image("ui/songBG", "preload"));
+				songBG.screenCenter(X);
+				songBG.x + 140;
+				songBG.setGraphicSize(900,200);
+				songBG.updateHitbox();
+				songBG.color = FlxColor.GRAY;
+		
+				var songSelector:FlxSprite = new FlxSprite(0,i * 250).loadGraphic(Paths.image("ui/songBG", "preload"));
+				songSelector.screenCenter(X);
+				songSelector.x + 140;
+				songSelector.setGraphicSize(920,220);
+				songSelector.updateHitbox();
+				songSelector.color = FlxColor.GRAY;
+		
+				var songText:FlxText = new FlxText(230, songBG.y + 40, 0, catagorySongs[i][songs].songName, 40);
+				songText.setFormat(null,40,FlxColor.BLACK);
+				songBG.screenCenter(X);
+		
+		
+				var icon:FlxSprite = new FlxSprite(songText.x + 600, songText.y + 5).loadGraphic("assets/songs/" + catagorySongs[i][songs].songName.toLowerCase() + "/icon.png");
+				icon.setGraphicSize(150,150);
+				icon.updateHitbox();
+					
+				elements.push(songSelector);
+				elements.push(songBG);
+				elements.push(songText);
+				elements.push(icon);
+		
+				grpSongs.push(elements);
+		
+				loadedSongs++;
+			}
+		}
+		
+		
+		
 		for (i in 0...songs.length)
 		{			
 			var elements:Array<FlxObject> = [];
@@ -303,7 +404,6 @@ class FreeplayState extends MusicBeatState
 			{
 				changeDiff(1);
 			}
-;
 		}
 
 		if (upP)
@@ -377,13 +477,19 @@ class FreeplayState extends MusicBeatState
 			var songFormat = StringTools.replace(songs[currentSelected].songName, " ", "-");
 			songFormat = Utility.songLowercase(songFormat);
 
-			var hmm = songData.get(songs[currentSelected].songName)[currentDifficulty];
-
-			GlobalData.latestDiff = currentDifficulty;
-	
-			PlayState.SONG = hmm;
-			editors.ChartingState.fromSongMenu = true;
-			FlxG.switchState(new editors.ChartingState());
+			try
+			{
+				var hmm = songData.get(songs[currentSelected].songName)[currentDifficulty];
+				GlobalData.latestDiff = currentDifficulty;
+				PlayState.SONG = hmm;
+				editors.ChartingState.fromSongMenu = true;
+				FlxG.switchState(new editors.ChartingState());
+			}
+			catch(ex)
+			{
+				Disclamer(currentDifficulty);
+				trace("You screwed up gg bro: " + ex);
+			}
 		}
 	}
 
@@ -464,22 +570,38 @@ class FreeplayState extends MusicBeatState
 	}
 
 
-	function loadTracks()
+	function loadTracks(overrideP:String = "none", stupidOtherArray:Bool = false, stupidInt:Int = 0)
 	{
-		#if sys
-		initSonglist = sys.FileSystem.readDirectory("assets/songs");//Utility.coolTextFile(Paths.txt('data/freeplaySonglist'));
-		#else
-		initSonglist = Utility.coolTextFile(Paths.txt('data/freeplaySonglist'));
-		#end
-
-		var ui_tex = Paths.getSparrowAtlas('ui/CampaignAssets');
+		switch(overrideP)
+		{
+			case "none":
+				#if sys
+				initSonglist = sys.FileSystem.readDirectory("assets/songs");//Utility.coolTextFile(Paths.txt('data/freeplaySonglist'));
+				#else
+				initSonglist = Utility.coolTextFile(Paths.txt('data/freeplaySonglist'));
+				#end
+			default:
+				#if sys
+				initSonglist = sys.FileSystem.readDirectory(overrideP);//Utility.coolTextFile(Paths.txt('data/freeplaySonglist'));
+				#else
+				initSonglist = Utility.coolTextFile(Paths.txt(overrideP));
+				#end	
+		}
 
 		for (i in 0...initSonglist.length)
 		{
 			var data:Array<String> = initSonglist[i].split(':');
 			var meta = new SongMetadata(data[0], Std.parseInt(data[2]), data[1]);
 
-			songs.push(meta);
+			if (stupidOtherArray)
+			{
+				catagorySongs[stupidInt].push(meta);
+			}
+			else
+			{
+				songs.push(meta);
+			}
+		
 			trace(meta);
 			
 			var format = StringTools.replace(meta.songName, " ", "-");
@@ -495,5 +617,21 @@ class FreeplayState extends MusicBeatState
 			
 			trace('Difficulties Loaded for ' + meta.songName);
 		}
+	}
+
+	var disclamerText:FlxText;
+
+	public function Disclamer(difficulty:Int) 
+	{
+		var uhhDiff:String = Utility.difficultyFromInt(difficulty);
+		
+		disclamerText = new FlxText(0,0,0,'Difficulty $uhhDiff for song doesnt seem to have a valid chart\nWould you like to create a new one?\n\nENTER: Continue\nESCAPE: Back',15);
+		disclamerText.screenCenter();
+		add(disclamerText);
+	}
+
+	public function RemoveDisclamer() 
+	{
+		remove(disclamerText);
 	}
 }

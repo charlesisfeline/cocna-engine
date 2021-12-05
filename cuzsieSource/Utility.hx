@@ -7,7 +7,7 @@ using StringTools;
 
 class Utility
 {
-	public static var difficultyArray:Array<String> = ['Easy', "Normal", "Hard", "Insane", "Expert"];
+	public static var difficultyArray:Array<String> = ['Easy', "Normal", "Hard", "Insane", "Expert", "Extra"];
 
 	public static function difficultyFromInt(difficulty:Int):String
 	{
