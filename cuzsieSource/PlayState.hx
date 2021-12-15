@@ -2722,15 +2722,6 @@ class PlayState extends MusicBeatState
 			#end
 		}
 
-		if (offsetTesting)
-		{
-			FlxG.sound.playMusic(Paths.music('freakyMenu'));
-			offsetTesting = false;
-			LoadingState.loadAndSwitchState(new OptionsMenu());
-			FlxG.save.data.offset = offsetTest;
-		}
-		else
-		{
 			campaignScore += Math.round(songScore);
 				
 			transIn = FlxTransitionableState.defaultTransIn;
@@ -2774,7 +2765,6 @@ class PlayState extends MusicBeatState
 				else
 					FlxG.switchState(new FreeplayState());
 			}
-		}
 	}
 
 

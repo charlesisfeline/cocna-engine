@@ -1,50 +1,75 @@
 package;
 
-
-import flixel.math.FlxAngle;
-import flixel.input.gamepad.FlxGamepad;
-import Controls.KeyboardScheme;
-import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.effects.FlxFlicker;
 import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
-import lime.app.Application;
 
-class MenuCheck
+class MenuCheck extends FlxSprite
 {
-    var image:FlxSprite;
-
-    public var checked:Bool;
-
-    public function new(x:Float,y:Float)
+	public var sprTracker:FlxSprite;
+	public var daValue(default, set):Bool;
+	public var copyAlpha:Bool = true;
+	public var offsetX:Float = 0;
+	public var offsetY:Float = 0;
+	
+    public function new(x:Float = 0, y:Float = 0, ?checked = false) 
     {
-        image = new FlxSprite(x,y);
-        image.loadGraphic(Paths.image("ui/menuCheckEnabled", 'preload'));
-        addShit();
-    }
+		super(x, y);
 
+		frames = Paths.getSparrowAtlas('checkboxanim');
+		animation.addByPrefix("unchecked", "checkbox0", 24, false);
+		animation.addByPrefix("unchecking", "checkbox anim reverse", 24, false);
+		animation.addByPrefix("checking", "checkbox anim0", 24, false);
+		animation.addByPrefix("checked", "checkbox finish", 24, false);
 
-    function addShit()
+		setGraphicSize(Std.int(0.9 * width));
+		updateHitbox();
+
+		animationFinished(checked ? 'checking' : 'unchecking');
+		animation.finishCallback = animationFinished;
+		daValue = checked;
+	}
+
+	override function update(elapsed:Float) 
     {
-        add(image);
-    }
-
-    public function update(elapsed:Float)
-    {
-        if (checked)
+		if (sprTracker != null) 
         {
-            image.loadGraphic(Paths.image('ui/menuCheckEnabled', 'preload'));
-        }
-        else
+			setPosition(sprTracker.x - 130 + offsetX, sprTracker.y + 30 + offsetY);
+			if(copyAlpha) 
+            {
+				alpha = sprTracker.alpha;
+			}
+		}
+		super.update(elapsed);
+	}
+
+	private function set_daValue(check:Bool):Bool {
+		if(check)
         {
-            image.loadGraphic(Paths.image('ui/menuCheckDisabled', 'preload'));
-        }
-    }
+			if(animation.curAnim.name != 'checked' && animation.curAnim.name != 'checking') 
+            {
+				animation.play('checking', true);
+				offset.set(34, 25);
+			}
+		} 
+        else if(animation.curAnim.name != 'unchecked' && animation.curAnim.name != 'unchecking')
+        {
+			animation.play("unchecking", true);
+			offset.set(25, 28);
+		}
+		return check;
+	}
+
+	private function animationFinished(name:String)
+	{
+		switch(name)
+		{
+			case 'checking':
+				animation.play('checked', true);
+				offset.set(3, 12);
+
+			case 'unchecking':
+				animation.play('unchecked', true);
+				offset.set(0, 2);
+		}
+	}
 }

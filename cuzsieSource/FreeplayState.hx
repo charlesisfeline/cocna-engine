@@ -106,30 +106,9 @@ class FreeplayState extends MusicBeatState
 
 		loadTracks();
 
-		for (i in 0...songs.length)
-		{
-			var isSongAndNotCatagory:Bool = false;
-			
-			for(diff in Utility.difficultyArray)
-			{
-				if (!sys.FileSystem.exists("assets/songs/" + songs[i] + '/$diff.funkin'))
-				{
-					isSongAndNotCatagory = true;
-				}
-			}
-
-
-			if (!isSongAndNotCatagory)
-			{
-				trace("catagory found: " + songs[i].songName);
-				catagories.push(songs[i].songName);
-				songs.remove(songs[i]);
-			}
-		}
-
 		var ui_tex = Paths.getSparrowAtlas('ui/CampaignAssets');
 
-		bg = new FlxSprite().loadGraphic(Paths.image('ui/Backgrounds/BackgroundFreeplay', 'preload'));
+		bg = new FlxSprite().loadGraphic(Paths.image('ui/Backgrounds/FunkinBG', 'preload'));
 		bg.scrollFactor.set();
 
 		checkeredBackground = new FlxBackdrop(Paths.image('ui/checkeredBG', "preload"), 0.2, 0.2, true, true);
@@ -142,7 +121,7 @@ class FreeplayState extends MusicBeatState
 			followTarget = prevCamFollow;
 			prevCamFollow = null;
 		}
-		FlxG.camera.follow(followTarget, LOCKON, 5000);
+		FlxG.camera.follow(followTarget, LOCKON, 0.1 * (50 / (cast (Lib.current.getChildAt(0), Main)).getFPS()));
 		FlxG.camera.focusOn(followTarget.getPosition());
 
 
@@ -150,83 +129,6 @@ class FreeplayState extends MusicBeatState
 
 		var loadedSongs:Int = 0;
 		var loadedCatagories:Int = 0;
-	
-		for (i in 0...catagories.length)
-		{			
-			loadTracks("assets/songs/" + catagories[i] + "/", true, loadedCatagories);
-
-			var elements:Array<FlxObject> = [];
-				
-			var songBG:FlxSprite = new FlxSprite(0,i * 250).loadGraphic(Paths.image("ui/songBG", "preload"));
-			songBG.screenCenter(X);
-			songBG.x + 140;
-			songBG.setGraphicSize(1000,200);
-			songBG.updateHitbox();
-			songBG.color = FlxColor.GRAY;
-
-			var songSelector:FlxSprite = new FlxSprite(0,i * 250).loadGraphic(Paths.image("ui/songBG", "preload"));
-			songSelector.screenCenter(X);
-			songSelector.x + 140;
-			songSelector.setGraphicSize(920,220);
-			songSelector.updateHitbox();
-			songSelector.color = FlxColor.GRAY;
-	
-			var songText:FlxText = new FlxText(230, songBG.y + 40, 0, catagories[i], 40);
-			songText.setFormat(null,40,FlxColor.BLACK);
-			songBG.screenCenter(X);
-				
-			elements.push(songSelector);
-			elements.push(songBG);
-			elements.push(songText);
-	
-			grpSongs.push(elements);
-	
-			loadedSongs++;
-			loadedCatagories++;
-		}
-
-
-		for (i in 0...catagorySongs.length)
-		{			
-			for (songs in 0...catagorySongs[i].length)
-			{
-				var elements:Array<FlxObject> = [];
-				
-				var songBG:FlxSprite = new FlxSprite(0,i * 250).loadGraphic(Paths.image("ui/songBG", "preload"));
-				songBG.screenCenter(X);
-				songBG.x + 140;
-				songBG.setGraphicSize(900,200);
-				songBG.updateHitbox();
-				songBG.color = FlxColor.GRAY;
-		
-				var songSelector:FlxSprite = new FlxSprite(0,i * 250).loadGraphic(Paths.image("ui/songBG", "preload"));
-				songSelector.screenCenter(X);
-				songSelector.x + 140;
-				songSelector.setGraphicSize(920,220);
-				songSelector.updateHitbox();
-				songSelector.color = FlxColor.GRAY;
-		
-				var songText:FlxText = new FlxText(230, songBG.y + 40, 0, catagorySongs[i][songs].songName, 40);
-				songText.setFormat(null,40,FlxColor.BLACK);
-				songBG.screenCenter(X);
-		
-		
-				var icon:FlxSprite = new FlxSprite(songText.x + 600, songText.y + 5).loadGraphic("assets/songs/" + catagorySongs[i][songs].songName.toLowerCase() + "/icon.png");
-				icon.setGraphicSize(150,150);
-				icon.updateHitbox();
-					
-				elements.push(songSelector);
-				elements.push(songBG);
-				elements.push(songText);
-				elements.push(icon);
-		
-				grpSongs.push(elements);
-		
-				loadedSongs++;
-			}
-		}
-		
-		
 		
 		for (i in 0...songs.length)
 		{			
@@ -288,24 +190,27 @@ class FreeplayState extends MusicBeatState
 
 		difficultySelectors = new FlxGroup();
 
-		leftArrow = new FlxSprite(-500,500);
+		leftArrow = new FlxSprite(100,200);
 		leftArrow.frames = ui_tex;
 		leftArrow.animation.addByPrefix('idle', "arrow left");
 		leftArrow.animation.addByPrefix('press', "arrow push left");
 		leftArrow.animation.play('idle');
+		leftArrow.scrollFactor.set();
 
 		sprDifficulty = new FlxSprite(leftArrow.x + 130, leftArrow.y);
-		sprDifficulty.frames = ui_tex;
+		sprDifficulty.frames = Paths.getSparrowAtlas("ui/Difficulties");
 		sprDifficulty.animation.addByPrefix('easy', 'EASY');
 		sprDifficulty.animation.addByPrefix('normal', 'NORMAL');
 		sprDifficulty.animation.addByPrefix('hard', 'HARD');
-		sprDifficulty.animation.play('easy');
+		sprDifficulty.animation.play('normal');
+		sprDifficulty.scrollFactor.set();
 
 		rightArrow = new FlxSprite(sprDifficulty.x + sprDifficulty.width + 50, leftArrow.y);
 		rightArrow.frames = ui_tex;
 		rightArrow.animation.addByPrefix('idle', 'arrow right');
 		rightArrow.animation.addByPrefix('press', "arrow push right", 24, false);
 		rightArrow.animation.play('idle');
+		rightArrow.scrollFactor.set();
 
 		add(bg);
 		add(checkeredBackground);
@@ -316,9 +221,9 @@ class FreeplayState extends MusicBeatState
 		add(comboText);
 		add(scoreText);
 		add(difficultySelectors);
-		difficultySelectors.add(leftArrow);
-		difficultySelectors.add(sprDifficulty);
-		difficultySelectors.add(rightArrow);
+		add(leftArrow);
+		add(sprDifficulty);
+		add(rightArrow);
 		for(groups in grpSongs)
 		{
 			for (item in groups)
@@ -336,21 +241,6 @@ class FreeplayState extends MusicBeatState
 	public function addSong(songName:String, weekNum:Int, songCharacter:String)
 	{
 		songs.push(new SongMetadata(songName, weekNum, songCharacter));
-	}
-
-	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
-	{
-		if (songCharacters == null)
-			songCharacters = ['dad'];
-
-		var num:Int = 0;
-		for (song in songs)
-		{
-			addSong(song, weekNum, songCharacters[num]);
-
-			if (songCharacters.length != 1)
-				num++;
-		}
 	}
 	
 	override function update(elapsed:Float)

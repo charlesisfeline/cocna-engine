@@ -1,4 +1,3 @@
 tutorial
 chapter 1
 chapter 2
-extras

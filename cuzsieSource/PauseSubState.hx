@@ -194,16 +194,6 @@ class PauseSubState extends MusicBeatSubstate
 						editors.ChartingState.fromSongMenu = false;
 						FlxG.switchState(new editors.ChartingState());
 
-
-					case "Options":
-						if (PlayState.instance.useVideo)
-						{
-							GlobalVideo.get().stop();
-							PlayState.instance.remove(PlayState.instance.videoSprite);
-							PlayState.instance.removedVideo = true;
-						}
-						FlxG.switchState(new IngameOptions());
-
 				case "Quit":
 					if (PlayState.instance.useVideo)
 					{

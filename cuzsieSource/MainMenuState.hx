@@ -60,7 +60,7 @@ class MainMenuState extends MusicBeatState
 	[
 		'story mode', 
 		'freeplay', 
-		'replays', 
+		'donate', 
 		'options'
 	];
 	
@@ -93,15 +93,6 @@ class MainMenuState extends MusicBeatState
 		FlxG.mouse.visible = true;
 		Conductor.changeBPM(102);
 
-		#if sys
-		if (!sys.FileSystem.exists(Sys.getCwd() + "/assets/replays"))
-			sys.FileSystem.createDirectory(Sys.getCwd() + "/assets/replays");
-		#end
-
-		@:privateAccess
-		{
-			trace("Loaded " + openfl.Assets.getLibrary("default").assetsLoaded + " assets (DEFAULT)");
-		}
 		
 		PlayerSettings.init();
 		
@@ -121,7 +112,7 @@ class MainMenuState extends MusicBeatState
 		var bg:FlxSprite = new FlxSprite(0).loadGraphic(Paths.image('ui/Backgrounds/MainBG', "preload"));
 		bg.scrollFactor.set(0.1, 0.1);
 		bg.screenCenter();
-		bg.setGraphicSize(1920,1080);
+		bg.setGraphicSize(1280,720);
 		add(bg);
 
 		checkeredBackground = new FlxBackdrop(Paths.image('ui/checkeredBG', "preload"), 0.2, 0.2, true, true);
@@ -140,11 +131,12 @@ class MainMenuState extends MusicBeatState
 
 
 
-		var tex = Paths.getSparrowAtlas('ui/NewMenuAssets');
 		var sideButtonPaths;
 
 		for (i in 0...optionShit.length)
 		{
+			var tex = Paths.getSparrowAtlas('main_menu/Button_${optionShit[i]}');
+			
 			var menuItem:FlxSprite = new FlxSprite(0, FlxG.height * 1.6);
 			menuItem.frames = tex;
 			menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
@@ -156,8 +148,11 @@ class MainMenuState extends MusicBeatState
 			menuItem.antialiasing = true;
 			menuItem.scrollFactor.x = 0;
 			menuItem.scrollFactor.y = 0.10;
-			// menuItem.setGraphicSize(Std.int(menuItem.width) - 100, Std.int(menuItem.height) - 50);
-			trace("line 133");
+			FlxTween.tween(menuItem,{y: 60 + (i * 160)},2,{ease: FlxEase.expoInOut, onComplete: function(flxTween:FlxTween) 
+			{ 
+				canClickStuff = true;
+				trace("omg buttons are here lol!");
+			}});
 		}
 
 
@@ -172,7 +167,7 @@ class MainMenuState extends MusicBeatState
 			button.animation.play('idle');
 			button.ID = i;
 			trace("putting button in the world");
-			button.x = 500;
+			button.x = -200;
 			button.y = i * 100;
 			sideItems.add(button);
 			button.antialiasing = true;
@@ -200,31 +195,6 @@ class MainMenuState extends MusicBeatState
 
 		changeItem();
 
-
-
-
-		logoBl = new FlxSprite(-500, 1500);
-		logoBl.frames = Paths.getSparrowAtlas('title/LogoBump');
-		logoBl.antialiasing = true;
-		logoBl.animation.addByPrefix('bump', 'Start Screen BG art', 24);
-		logoBl.animation.play('bump');
-		logoBl.updateHitbox();
-		logoBl.screenCenter(X);
-		add(logoBl);
-
-
-		titleText = new FlxSprite(0,600);
-		titleText.frames = Paths.getSparrowAtlas('title/EnterToBegin');
-		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
-		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
-		titleText.antialiasing = true;
-		titleText.animation.play('idle');
-		titleText.updateHitbox();
-		titleText.screenCenter(X);
-		add(titleText);
-
-		FlxTween.tween(logoBl,{y: -185}, 1, {ease: FlxEase.expoInOut});
-
 		super.create();
 
 		FlxG.camera.flash(FlxColor.WHITE, 4);
@@ -241,7 +211,7 @@ class MainMenuState extends MusicBeatState
 		selectedSomethin = true;
 		FlxG.sound.play(Paths.sound('confirmMenu'));
 		canClick = false;
-		FlxG.save.flush();// putting flush here cuz of skins being poop
+
 		if (selectType == 0)
 		{
 			menuItems.forEach(function(spr:FlxSprite)
@@ -304,21 +274,7 @@ class MainMenuState extends MusicBeatState
 	}
 	
 	
-	function buttonRise()
-	{
-		menuItems.forEach(function(spr:FlxSprite)
-		{
-			titleText.animation.play('press');
-			FlxTween.tween(logoBl,{y: -185, x: 400}, 1, {ease: FlxEase.expoInOut});
-			FlxTween.tween(titleText,{y: 1500}, 1, {ease: FlxEase.expoInOut});
-			
-			FlxTween.tween(spr,{y: 60 + (spr.ID * 160)},2,{ease: FlxEase.expoInOut, onComplete: function(flxTween:FlxTween) 
-			{ 
-				canClickStuff = true;
-				trace("it rose up");
-			}});
-		});
-	}
+
 	override function update(elapsed:Float)
 	{
 		if (FlxG.sound.music.volume < 0.8)
@@ -337,7 +293,6 @@ class MainMenuState extends MusicBeatState
 
 		if(FlxG.keys.justPressed.ENTER && !hasInnitiated)
 		{
-			buttonRise();
 			hasInnitiated = true;
 			trace("it worked lmao");
 		}
@@ -433,13 +388,10 @@ class MainMenuState extends MusicBeatState
 					FlxG.switchState(new FreeplayState());
 					trace("Freeplay Menu Selected");
 				case 'options':
-					FlxG.switchState(new OptionsMenu());
+					FlxG.switchState(new menus.options.OptionsState());
 					trace("Options Menu Selected");
 				case 'donate':
 					FlxG.switchState(new CharacterSelectState());
-					trace("Skin Menu Selected");
-				case 'replays':
-					FlxG.switchState(new LoadReplayState());
 					trace("Skin Menu Selected");
 			}
 		}

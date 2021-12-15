@@ -1,5 +1,6 @@
 package;
 
+
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -37,15 +38,19 @@ using StringTools;
 class TitleState extends MusicBeatState
 {
 	static var initialized:Bool = false;
+
 	var blackScreen:FlxSprite;
 	var credGroup:FlxGroup;
 	var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
+	var ngSpr:FlxSprite;
+
 	var curWacky:Array<String> = [];
+
 	var wackyImage:FlxSprite;
 
 	override public function create():Void
-	{	
+	{
 		#if polymod
 		polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
 		#end
@@ -65,32 +70,31 @@ class TitleState extends MusicBeatState
 		#if windows
 		DiscordClient.initialize();
 
-		Application.current.onExit.add (function (exitCode) 
-		{
+		Application.current.onExit.add (function (exitCode) {
 			DiscordClient.shutdown();
-		});
+		 });
+		 
 		#end
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
-		trace('Welcome back,' + FlxG.save.data.playersName);
+		trace('hello');
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, Date.now().getDay());
-
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(versionShit);
+		// DEBUG BULLSHIT
 
 		super.create();
+
+		// NGio.noLogin(APIStuff.API);
 
 		#if ng
 		var ng:NGio = new NGio(APIStuff.API, APIStuff.EncKey);
 		trace('NEWGROUNDS LOL');
 		#end
 
-		FlxG.save.bind('cuzsiemod_data', 'cuzsiedev');
+		FlxG.save.bind('funkin', 'ninjamuffin99');
 
 		KadeEngineData.initSave();
+		
 		Highscore.load();
 
 		if (FlxG.save.data.weekUnlocked != null)
@@ -98,18 +102,26 @@ class TitleState extends MusicBeatState
 			if (StoryMenuState.weekUnlocked.length < 4)
 				StoryMenuState.weekUnlocked.insert(0, true);
 
-			// QUICK PATCH OOPS!
 			if (!StoryMenuState.weekUnlocked[0])
 				StoryMenuState.weekUnlocked[0] = true;
 		}
 
+		#if FREEPLAY
+		FlxG.switchState(new FreeplayState());
+		#elseif CHARTING
+		FlxG.switchState(new ChartingState());
+		#else
 		new FlxTimer().start(1, function(tmr:FlxTimer)
-			{
-				startIntro();
-			});
+		{
+			startIntro();
+		});
+		#end
 	}
 
+	var logoBl:FlxSprite;
+	var gfDance:FlxSprite;
 	var danceLeft:Bool = false;
+	var titleText:FlxSprite;
 
 	function startIntro()
 	{
@@ -127,14 +139,52 @@ class TitleState extends MusicBeatState
 			transIn = FlxTransitionableState.defaultTransIn;
 			transOut = FlxTransitionableState.defaultTransOut;
 
-
-			FlxG.sound.playMusic(Paths.music('chillMenu'), 0);
+			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 
 			FlxG.sound.music.fadeIn(4, 0, 0.7);
 		}
 
 		Conductor.changeBPM(102);
 		persistentUpdate = true;
+
+		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		add(bg);
+
+		if(Main.watermarks) {
+			logoBl = new FlxSprite(-150, -100);
+			logoBl.frames = Paths.getSparrowAtlas('title/CuzsieLogoBumpin');
+			logoBl.antialiasing = true;
+			logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
+			logoBl.animation.play('bump');
+			logoBl.updateHitbox();
+			// logoBl.screenCenter();
+			// logoBl.color = FlxColor.BLACK;
+		} else {
+			logoBl = new FlxSprite(-150, -100);
+			logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
+			logoBl.antialiasing = true;
+			logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
+			logoBl.animation.play('bump');
+			logoBl.updateHitbox();
+		}
+
+		gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
+		gfDance.frames = Paths.getSparrowAtlas('title/gfDanceTitle');
+		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+		gfDance.antialiasing = true;
+		add(gfDance);
+		add(logoBl);
+
+		titleText = new FlxSprite(100, FlxG.height * 0.8);
+		titleText.frames = Paths.getSparrowAtlas('title/EnterToBegin');
+		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
+		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
+		titleText.antialiasing = true;
+		titleText.animation.play('idle');
+		titleText.updateHitbox();
+		// titleText.screenCenter(X);
+		add(titleText);
 
 		credGroup = new FlxGroup();
 		add(credGroup);
@@ -150,7 +200,17 @@ class TitleState extends MusicBeatState
 
 		credTextShit.visible = false;
 
+		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('ui/CuzsieLogo'));
+		add(ngSpr);
+		ngSpr.visible = false;
+		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
+		ngSpr.updateHitbox();
+		ngSpr.screenCenter(X);
+		ngSpr.antialiasing = true;
+
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
+
+		FlxG.mouse.visible = false;
 
 		if (initialized)
 			skipIntro();
@@ -169,7 +229,7 @@ class TitleState extends MusicBeatState
 
 		for (i in firstArray)
 		{
-			swagGoodArray.push(i.split(','));
+			swagGoodArray.push(i.split('--'));
 		}
 
 		return swagGoodArray;
@@ -181,6 +241,12 @@ class TitleState extends MusicBeatState
 	{
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
+		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
+
+		if (FlxG.keys.justPressed.F)
+		{
+			FlxG.fullscreen = !FlxG.fullscreen;
+		}
 
 		var pressedEnter:Bool = controls.ACCEPT;
 
@@ -196,10 +262,27 @@ class TitleState extends MusicBeatState
 
 		if (pressedEnter && !transitioning && skippedIntro)
 		{
+			#if !switch
+			NGio.unlockMedal(60960);
+
+			if (Date.now().getDay() == 5)
+				NGio.unlockMedal(61034);
+			#end
+
+			if (FlxG.save.data.flashing)
+				titleText.animation.play('press');
+
 			FlxG.camera.flash(FlxColor.WHITE, 1);
 			FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
 
 			transitioning = true;
+
+			MainMenuState.firstStart = true;
+
+			new FlxTimer().start(2, function(tmr:FlxTimer)
+			{
+				FlxG.switchState(new MainMenuState());
+			});
 		}
 
 		if (pressedEnter && !skippedIntro && initialized)
@@ -243,41 +326,44 @@ class TitleState extends MusicBeatState
 	override function beatHit()
 	{
 		super.beatHit();
+
+		logoBl.animation.play('bump');
 		danceLeft = !danceLeft;
+
+		if (danceLeft)
+			gfDance.animation.play('danceRight');
+		else
+			gfDance.animation.play('danceLeft');
 
 		FlxG.log.add(curBeat);
 
 		switch (curBeat)
 		{
 			case 1:
-				createCoolText(['Cuzsie']);
-			case 2:
-				addMoreText('Presents');
+				createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
 			case 3:
-				deleteCoolText();
+				addMoreText('present');
 			case 4:
-				createCoolText(['Made with']);
+				deleteCoolText();
 			case 5:
-				addMoreText('Cuzsie Engine');
-			case 6:
-				deleteCoolText();
+				addMoreText('Made With');
 			case 7:
-				createCoolText([curWacky[0]]);
+				addMoreText('Cuzsie Engine');
 			case 8:
-				addMoreText(curWacky[1]);
-			case 9:
 				deleteCoolText();
-				createCoolText([curWacky[0]]);
-			case 10:
-				addMoreText(curWacky[1]);
+			case 9:
+				addMoreText('A mod for');
+			case 11:
+				ngSpr.visible = true;
 			case 12:
 				deleteCoolText();
+				ngSpr.visible = false;
 			case 13:
-				addMoreText('FNF');
+				addMoreText('The');
 			case 14:
-				addMoreText('Vs CuZsie');
+				addMoreText('Cuzsie');
 			case 15:
-				addMoreText('Version One');
+				addMoreText('Mod');
 			case 16:
 				skipIntro();
 		}
@@ -289,8 +375,11 @@ class TitleState extends MusicBeatState
 	{
 		if (!skippedIntro)
 		{
+			remove(ngSpr);
+
 			FlxG.camera.flash(FlxColor.WHITE, 4);
-			FlxG.switchState(new MainMenuState());
+			remove(credGroup);
+			skippedIntro = true;
 		}
 	}
 }

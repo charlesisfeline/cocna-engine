@@ -1,12 +1,9 @@
-package;
-
-/// Code created by Rozebud for FPS Plus (thanks rozebud)
-// modified by KadeDev for use in Kade Engine/Tricky
+package menus.options;
 
 import flixel.input.gamepad.FlxGamepad;
 import flixel.util.FlxAxes;
 import flixel.FlxSubState;
-import Options.Option;
+import menus.options.Option.Option;
 import flixel.input.FlxInput;
 import flixel.input.keyboard.FlxKey;
 import flixel.FlxG;
@@ -35,35 +32,77 @@ class KeyBindMenu extends FlxSubState
     var keyTextDisplay:FlxText;
     var keyWarning:FlxText;
     var warningTween:FlxTween;
-    var keyText:Array<String> = ["LEFT", "DOWN", "MIDDLE", "UP", "RIGHT","6 Left","6 Right","RESET"];
-    var defaultKeys:Array<String> = ["A", "S", "MIDDLE", "W", "D","LEFT","RIGHT", "R"];
-    var defaultGpKeys:Array<String> = ["DPAD_LEFT", "DPAD_DOWN", "DPAD_UP", "DPAD_RIGHT",'R'];
     var curSelected:Int = 0;
-
-    var keys:Array<String> = [FlxG.save.data.leftBind,
-                              FlxG.save.data.downBind,
-                              FlxG.save.data.middleBind,
-                              FlxG.save.data.upBind,
-                              FlxG.save.data.rightBind,
-                              FlxG.save.data.sixLeftBind,
-                              FlxG.save.data.sixRightBind,
-                              FlxG.save.data.killBind];
-    var gpKeys:Array<String> = [FlxG.save.data.gpleftBind,
-                              FlxG.save.data.gpdownBind,
-                              FlxG.save.data.gpupBind,
-                              FlxG.save.data.gprightBind,
-                              FlxG.save.data.gpkillBind];
     var tempKey:String = "";
-    var blacklist:Array<String> = ["ESCAPE", "ENTER", "BACKSPACE", "SPACE", "TAB"];
-
     var blackBox:FlxSprite;
     var infoText:FlxText;
-
     var state:String = "select";
+    
+    var keyText:Array<String> = 
+    [
+        "LEFT", 
+        "DOWN", 
+        "MIDDLE", 
+        "UP", 
+        "RIGHT",
+        "6 Left",
+        "6 Right",
+        "RESET"
+    ];
+
+    var defaultKeys:Array<String> = 
+    [
+        "A", 
+        "S", 
+        "MIDDLE", 
+        "W", 
+        "D",
+        "LEFT",
+        "RIGHT", 
+        "R"
+    ];
+    
+    var defaultGpKeys:Array<String> = 
+    [
+        "DPAD_LEFT", 
+        "DPAD_DOWN", 
+        "DPAD_UP", 
+        "DPAD_RIGHT",
+        'R'
+    ];
+
+    var keys:Array<String> = 
+    [
+        FlxG.save.data.leftBind,
+        FlxG.save.data.downBind,
+        FlxG.save.data.middleBind,
+        FlxG.save.data.upBind,
+        FlxG.save.data.rightBind,
+        FlxG.save.data.sixLeftBind,
+        FlxG.save.data.sixRightBind,
+        FlxG.save.data.killBind
+    ];
+    
+    var gpKeys:Array<String> = 
+    [
+        FlxG.save.data.gpleftBind,
+        FlxG.save.data.gpdownBind,
+        FlxG.save.data.gpupBind,
+        FlxG.save.data.gprightBind,
+        FlxG.save.data.gpkillBind
+    ];
+
+    var blacklist:Array<String> = 
+    [
+        "ESCAPE", 
+        "ENTER", 
+        "BACKSPACE", 
+        "SPACE", 
+        "TAB"
+    ];
 
 	override function create()
-	{	
-
+	{
         for (i in 0...keys.length)
         {
             var k = keys[i];
@@ -88,7 +127,7 @@ class KeyBindMenu extends FlxSubState
 		keyTextDisplay.borderSize = 2;
 		keyTextDisplay.borderQuality = 3;
 
-        blackBox = new FlxSprite(0,0).makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);
+        blackBox = new FlxSprite(0,0).loadGraphic(Paths.image("ui/Backgrounds/FunkinBG", "preload"));
         add(blackBox);
 
         infoText = new FlxText(-10, 580, 1280, 'Current Mode: ${KeyBinds.gamepad ? 'GAMEPAD' : 'KEYBOARD'}. Press TAB to switch\n(${KeyBinds.gamepad ? 'RIGHT Trigger' : 'Escape'} to save, ${KeyBinds.gamepad ? 'LEFT Trigger' : 'Backspace'} to leave without saving. ${KeyBinds.gamepad ? 'START To change a keybind' : ''})', 72);
@@ -107,8 +146,6 @@ class KeyBindMenu extends FlxSubState
         FlxTween.tween(keyTextDisplay, {alpha: 1}, 1, {ease: FlxEase.bounceInOut});
         FlxTween.tween(infoText, {alpha: 1}, 1.4, {ease: FlxEase.expoInOut});
         FlxTween.tween(blackBox, {alpha: 0.7}, 1, {ease: FlxEase.expoInOut});
-
-        OptionsMenu.instance.acceptInput = false;
 
         textUpdate();
 
@@ -271,7 +308,7 @@ class KeyBindMenu extends FlxSubState
             for(i in 0...keyText.length){
 
                 var textStart = (i == curSelected) ? "> " : "  ";
-                keyTextDisplay.text += textStart + keyText[i] + ": " + ((keys[i] != keyText[i]) ? (keys[i] + " / ") : "" ) + keyText[i] + " ARROW\n";
+                keyTextDisplay.text += textStart + keyText[i] + ": " + ((keys[i] != keyText[i]) ? (keys[i] + " / ") : "" ) + keyText[i] + "\n";
 
             }
         }
@@ -319,8 +356,6 @@ class KeyBindMenu extends FlxSubState
         state = "exiting";
 
         save();
-
-        OptionsMenu.instance.acceptInput = true;
 
         FlxTween.tween(keyTextDisplay, {alpha: 0}, 1, {ease: FlxEase.expoInOut});
         FlxTween.tween(blackBox, {alpha: 0}, 1.1, {ease: FlxEase.expoInOut, onComplete: function(flx:FlxTween){close();}});
