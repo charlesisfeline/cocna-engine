@@ -3,8 +3,7 @@
 	
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<!-- DONT CHANGE APPLICATION FILE, OR PACKAGE NAME!!!! -->
-	<app title="Friday Night Funkin': The Cuzsie Mod" file="CuzsieMod" packageName="com.cuzsiedev.fnfcuzsie" package="com.cuzsiedev.fnfcuzsie" main="Main" version="0.2.7.1" company="cuzsiedev"/>
+	<app title="The Cuzsie Mod" file="CuzsieMod" packageName="com.cuzsiedev.fnfcuzsie" package="com.cuzsiedev.fnfcuzsie" main="Main" version="0.2.7.1" company="cuzsiedev"/>
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
 	<app preloader="flixel.system.FlxPreloader" />
 	<set name="SWF_VERSION" value="11.8" />
@@ -12,53 +11,50 @@
 
 	<!-- ____________________________ Window Settings ___________________________ -->
 
-	<!--These window settings apply to all targets-->
 	<window width="1280" height="720" fps="" background="#000000" hardware="true" vsync="false" />
 
-	<!--HTML5-specific-->
 	<window if="html5" resizable="true" />
-
-	<!--Desktop-specific-->
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" vsync="false" background="null" color-depth="32" />
-
-	<!--Mobile-specific-->
 	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false"/>
-
-	<!--Switch-specific-->
 	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
+	<classpath name="source" />
+
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bit" />
-	
-	<classpath name="cuzsieSource" />
-	
+
+	<assets path="dlls/" rename=''/> <!-- DLL's -->
 	<assets path="assets/preload/stages" rename="assets/stages" library="stages"/> <!-- Stages -->
 	<assets path="assets/songs" library="songs" exclude="*.ogg" if="web"/> <!-- Songs -->
 	<assets path='game_mods' rename="mods" embed='false'/> <!-- Mods -->
-	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/> <!-- Preload (Embedded) -->
-	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/> <!-- Preload (Embedded) -->
-	<assets path="assets/shared"   library="shared"   exclude="*.ogg" if="web" embed='true'/> <!-- Shared (Embedded) -->
-	<assets path="assets/shared"   library="shared"   exclude="*.mp3" unless="web" embed='true'/> <!-- Shared (Embedded) -->
+	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/> <!-- Preload -->
+	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/>
+	<assets path="assets/shared"   library="shared"   exclude="*.ogg" if="web" embed='true'/> <!-- Shared -->
+	<assets path="assets/shared"   library="shared"   exclude="*.mp3" unless="web" embed='true'/>
 	<assets path="assets/fonts" embed='true'/> <!-- Fonts -->
-	<assets path="LICENSE" embed='true'/>
+	<assets path="assets/failsaveAssets" library="failsaveAssets" embed='true'/> <!-- Failsave Assets -->
+	<assets path="LICENSE" embed='false'/>
 
-	<define name="PRELOAD_ALL" unless="web" />
+	<define name="PRELOAD_ALL" unless="web"/>
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
+	<define name="ALLOW_DISCORD_RPC" if="windows"/>
+	<define name="ENABLE_LUA" if="windows"/>
 
-	
-	
 	<section if="PRELOAD_ALL">
 		<library name="songs"    preload="true" />
 		<library name="shared"   preload="true" />
 		<library name="mods"   preload="true" />
+		<library name="failsaveAssets"   preload="true" />
 	</section>
+
 	<section if="NO_PRELOAD_ALL">
 		<library name="songs"    preload="false" />
 		<library name="shared"   preload="false" />
 		<library name="mods"   preload="false" />
+		<library name="failsaveAssets"   preload="false" />
 	</section>	
 
 	<!-- _______________________________ Libraries ______________________________ -->

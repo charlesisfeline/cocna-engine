@@ -1,0 +1,1 @@
+Failsave Assets is a folder embedded in your copy of Cuzsie Engine, made so that you cant delete assets to the point where the game looks unbearable
