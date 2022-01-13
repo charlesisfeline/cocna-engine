@@ -21,6 +21,42 @@ using StringTools;
 
 class Note extends FlxSprite
 {
+	public static var staticKeyAnimations:Array<Array<String>> = // Use this when grabbing animations for keys
+	[
+		[],
+		["Middle"],
+		["Left", "Right"], 
+		["Left", "Middle", "Right"], 
+		["Left", "Down", "Up", "Right"],  
+		["Left", "Down", "Middle", "Up", "Right"], 
+		["Left", "Down", "Right", "Left", "Down", "Right"], 
+		["Left", "Down", "Right", "Middle", "Left", "Down", "Right"], 
+		["Left", "Down", "Up", "Right", "Left", "Down", "Up", "Right"], 
+		[ "Left", "Down", "Up", "Right", "Middle","Left", "Down", "Up", "Right"] 
+	];
+
+    public static var widths:Array<Float> = 
+	[
+        0.000,
+        0,
+        1,
+        1,
+        1,
+        0.9,
+        0.7
+	];
+
+    public static var sizes:Array<Float> =
+	[
+        0.000,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.65
+	];
+	
 	public var strumTime:Float = 0;
 
 	public var mustPress:Bool = false;
@@ -101,7 +137,7 @@ class Note extends FlxSprite
 
 		var noteTypeCheck:String = 'normal'; // The note style
 
-		frames = Paths.getSparrowAtlas("notes/Notes_" + FlxG.save.data.noteSkin, "preload"); // help why doesnt this work
+		frames = Paths.getSparrowAtlas("notes/Notes_" + FlxG.save.data.noteSkin, "preload");
 
 		animation.addByPrefix('greenScroll', 'Up0');
 		animation.addByPrefix('redScroll', 'Right0');
@@ -118,7 +154,7 @@ class Note extends FlxSprite
 		animation.addByPrefix('redhold', 'Red Hold');
 		animation.addByPrefix('bluehold', 'Blue Hold');
 
-		setGraphicSize(Std.int(width * NoteData.sizes[PlayState.keyAmmount]));
+		setGraphicSize(Std.int(width * sizes[PlayState.keyAmmount]));
 		updateHitbox();
 		antialiasing = true;
 
@@ -214,24 +250,21 @@ class Note extends FlxSprite
 
 
 		if (isCustomNote && !inCharter)
-		{
 			PlayState.instance.setHealth(customNoteData.getVar('health','float'));
-		}
+
 		if (mustPress)
 		{
-			// ass
 			if (isSustainNote)
 			{
-				if (strumTime > Conductor.songPosition - (Conductor.safeZoneOffset * 1.5)
-					&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * 0.5))
+				if (strumTime > Conductor.songPosition - (Conductor.safeZoneOffset * 1.5) && strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * 0.5))
 					canBeHit = true;
 				else
 					canBeHit = false;
 			}
+
 			else
 			{
-				if (strumTime > Conductor.songPosition - Conductor.safeZoneOffset
-					&& strumTime < Conductor.songPosition + Conductor.safeZoneOffset)
+				if (strumTime > Conductor.songPosition - Conductor.safeZoneOffset && strumTime < Conductor.songPosition + Conductor.safeZoneOffset)
 					canBeHit = true;
 				else
 					canBeHit = false;

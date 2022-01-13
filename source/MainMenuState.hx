@@ -34,7 +34,8 @@ class MainMenuState extends MusicBeatState
 
 	private var camGame:FlxCamera;
 
-	var optionShit:Array<String> = [
+	var optionShit:Array<String> = 
+	[
 		'story mode', 
 		'freeplay', 
 		'credits', 
@@ -197,6 +198,10 @@ class MainMenuState extends MusicBeatState
 		if (FlxG.keys.justPressed.SIX)
 		{
 			FlxG.switchState(new ErrorFailsave());
+		}
+		if(FlxG.keys.justPressed.EIGHT)
+		{
+			FlxG.switchState(new menus.MenuBuilder());
 		}
 	}
 

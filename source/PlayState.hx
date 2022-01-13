@@ -1154,13 +1154,13 @@ class PlayState extends MusicBeatState
 			staticArrow.animation.addByPrefix('blue', 'Down Static');
 			staticArrow.animation.addByPrefix('purple', 'Left Static');
 			staticArrow.animation.addByPrefix('red', 'RightStatic');
-			staticArrow.animation.addByPrefix('static', NoteData.staticKeyAnimations[keyAmmount][i] + " Static");
-			staticArrow.animation.addByPrefix('pressed', NoteData.staticKeyAnimations[keyAmmount][i] + ' Pressed', 24, false);
-			staticArrow.animation.addByPrefix('confirm', NoteData.staticKeyAnimations[keyAmmount][i] + " Pressed", 24, false);
+			staticArrow.animation.addByPrefix('static', Note.staticKeyAnimations[keyAmmount][i] + " Static");
+			staticArrow.animation.addByPrefix('pressed', Note.staticKeyAnimations[keyAmmount][i] + ' Pressed', 24, false);
+			staticArrow.animation.addByPrefix('confirm', Note.staticKeyAnimations[keyAmmount][i] + " Pressed", 24, false);
 			staticArrow.antialiasing = true;
-			staticArrow.setGraphicSize(Std.int(staticArrow.width * NoteData.sizes[keyAmmount]));
+			staticArrow.setGraphicSize(Std.int(staticArrow.width * Note.sizes[keyAmmount]));
 			staticArrow.scrollFactor.set();
-			staticArrow.x += Note.swagWidth * NoteData.widths[keyAmmount] * i;
+			staticArrow.x += Note.swagWidth * Note.widths[keyAmmount] * i;
 			staticArrow.updateHitbox();
 			staticArrow.y -= 10;
 			staticArrow.alpha = 0;
@@ -1179,9 +1179,9 @@ class PlayState extends MusicBeatState
 			var overrideWidth:Float = switch(player) 
 			{
 				case 1: // Position for Player One (BF)
-					(FlxG.width / 1.45) - 200; 
+					(FlxG.width / 1.45) - 110; 
 				case 0: // Position for Player Two (Dad);
-					(FlxG.width / 1.45) - 1100; 
+					(FlxG.width / 1.45) - 830; 
 				default: 
 					(FlxG.width / 1.45) - 1100;
 			};
