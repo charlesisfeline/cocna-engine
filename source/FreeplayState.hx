@@ -195,18 +195,20 @@ class FreeplayState extends MusicBeatState{
 			songInfo += "" + FlxStringUtil.formatTime(funkySong.length / 1000, false); 
 		}
 
-		var songBG:FlxSprite = new FlxSprite(-290,targetX * 250).loadGraphic(Paths.image("ui/songBG", "preload")); // The background for the song panel
-		songBG.setGraphicSize(900,200);
+		var songBG:FlxSprite = new FlxSprite(120,targetX * 160).loadGraphic(Paths.image("ui/songBG", "preload")); // The background for the song panel
+		songBG.setGraphicSize(600,133);
 		songBG.updateHitbox();
 		songBG.color = FlxColor.GRAY;
 
 		var songText:FlxText = new FlxText(-30, songBG.y + 40, 0, title, 20); // The text to show the current song for this panel (EG: Bopeebo)
 		songText.setFormat(Paths.font("vcr.ttf"), 35);
 		songText.color = FlxColor.BLACK;
+		songText.borderSize = 0.25;
 
 		var songInfo:FlxText = new FlxText(350, songBG.y + 70, 0, songInfo, 13); // The info text to show stuff like song duration
 		songInfo.setFormat(Paths.font("vcr.ttf"),15);
 		songInfo.color = FlxColor.BLACK;
+		songInfo.borderSize = 0.12;
 
 		var icon:FlxSprite = new FlxSprite(songText.x + 600, songText.y + -10).loadGraphic("assets/songs/" + title + "/icon.png"); // The icon next to the song name
 		icon.setGraphicSize(150,150);

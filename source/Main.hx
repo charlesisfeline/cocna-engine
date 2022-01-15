@@ -44,11 +44,6 @@ class Main extends Sprite
 		{
 			addEventListener(Event.ADDED_TO_STAGE, init);
 		}
-
-		Lib.application.window.width = 1280;
-		Lib.application.window.height = 720;
-		Lib.application.window.x = 1920 - 1280;
-		Lib.application.window.y = 1080 - 720;
 	}
 
 	public static var webmHandler:WebmHandler;
