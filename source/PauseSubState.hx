@@ -179,10 +179,10 @@ class PauseSubState extends MusicBeatSubstate
 						}
 						PlayState.loadRep = false;
 						#if windows
-						if (PlayState.luaModchart != null)
+						if (PlayState.modchart != null)
 						{
-							PlayState.luaModchart.die();
-							PlayState.luaModchart = null;
+							PlayState.modchart.die();
+							PlayState.modchart = null;
 						}
 						#end
 						if (FlxG.save.data.fpsCap > 290)
@@ -210,10 +210,10 @@ class PauseSubState extends MusicBeatSubstate
 					}
 					PlayState.loadRep = false;
 					#if windows
-					if (PlayState.luaModchart != null)
+					if (PlayState.modchart != null)
 					{
-						PlayState.luaModchart.die();
-						PlayState.luaModchart = null;
+						PlayState.modchart.die();
+						PlayState.modchart = null;
 					}
 					#end
 					if (FlxG.save.data.fpsCap > 290)
