@@ -24,9 +24,6 @@ class Stage
     public var layInFront:Array<Array<FlxSprite>> = [[], [], []]; // BG layering, format: first [0] - in front of GF, second [1] - in front of opponent, third [2] - in front of boyfriend(and techincally also opponent since Haxe layering moment)
     public var slowBacks:Map<Int, Array<FlxSprite>> = []; // Change/add/remove backgrounds mid song! Format: "slowBacks[StepToBeActivated] = [Sprites,To,Be,Changed,Or,Added];"
 
- 
-
-
 
     public function new(daStage:String)
     {
@@ -35,54 +32,7 @@ class Stage
         halloweenLevel = false;
 
         switch(daStage)
-        {
-            case 'park':
-			{
-				camZoom = 0.9;
-				curStage = 'park';
-						
-				var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.stages('park/Sky'));
-				bg.scrollFactor.set(0.1, 0.1);
-
-				var ground:FlxSprite = new FlxSprite(-200, 0).loadGraphic(Paths.stages('park/Ground'));
-				
-				toAdd.push(bg);
-				toAdd.push(ground);
-			}
-
-
-
-			case 'park-alpha':
-			{
-				camZoom = 0.7;
-				curStage = 'park-alpha';
-				
-				var bg:FlxSprite = new FlxSprite(0,0).loadGraphic(Paths.stages('park-alpha/BrokenBG'));
-				bg.setGraphicSize(2560,1440);
-				bg.screenCenter();
-				bg.updateHitbox();
-				bg.scrollFactor.set(0.1, 0.1);
-
-				toAdd.push(bg);
-			}
-
-
-
-			case 'dreamland':
-			{
-				camZoom = 0.6;
-				curStage = 'dreamland';
-						
-				var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.stages('dreamland/dreamBG'));
-				bg.scrollFactor.set(0.1, 0.1);
-				bg.setGraphicSize(2560,1440);
-
-				toAdd.push(bg);
-			}
-
-
-					
-			// dis just the failsave stage
+        {		
 			default:
 			{
 				camZoom = 0.9;
@@ -112,73 +62,71 @@ class Stage
 				toAdd.push(stageCurtains);
 			}
             
-        
-            
             case 'halloween':
-					{
-						halloweenLevel = true;
+			{
+				halloweenLevel = true;
 
-						var hallowTex = Paths.getSparrowAtlas('halloween/halloweenBG', 'stages');
+				var hallowTex = Paths.getSparrowAtlas('halloween/halloweenBG', 'stages');
 
-						var halloweenBG = new FlxSprite(-200, -100);
-						halloweenBG.frames = hallowTex;
-						halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
-						halloweenBG.animation.addByPrefix('lightning', 'halloweem bg lightning strike', 24, false);
-						halloweenBG.animation.play('idle');
-						halloweenBG.antialiasing = FlxG.save.data.antialiasing;
-						swagBacks['halloweenBG'] = halloweenBG;
-                        toAdd.push(halloweenBG);
-					}
-				case 'philly':
-					{
+				var halloweenBG = new FlxSprite(-200, -100);
+				halloweenBG.frames = hallowTex;
+				halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
+				halloweenBG.animation.addByPrefix('lightning', 'halloweem bg lightning strike', 24, false);
+				halloweenBG.animation.play('idle');
+				halloweenBG.antialiasing = FlxG.save.data.antialiasing;
+				swagBacks['halloweenBG'] = halloweenBG;
+            	toAdd.push(halloweenBG);
+			}
+			
+			case 'philly':
+			{
+				var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.stages('philly/sky'));
+				bg.scrollFactor.set(0.1, 0.1);
+				swagBacks['bg'] = bg;
+                toAdd.push(bg);
 
-						var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.stages('philly/sky'));
-						bg.scrollFactor.set(0.1, 0.1);
-						swagBacks['bg'] = bg;
-                        toAdd.push(bg);
+				var city:FlxSprite = new FlxSprite(-10).loadGraphic(Paths.stages('philly/city'));
+				city.scrollFactor.set(0.3, 0.3);
+				city.setGraphicSize(Std.int(city.width * 0.85));
+				city.updateHitbox();
+				swagBacks['city'] = city;
+                toAdd.push(city);
 
-						var city:FlxSprite = new FlxSprite(-10).loadGraphic(Paths.stages('philly/city'));
-						city.scrollFactor.set(0.3, 0.3);
-						city.setGraphicSize(Std.int(city.width * 0.85));
-						city.updateHitbox();
-						swagBacks['city'] = city;
-                        toAdd.push(city);
+				var phillyCityLights = new FlxTypedGroup<FlxSprite>();
+				if (FlxG.save.data.distractions)
+				{
+					swagGroup['phillyCityLights'] = phillyCityLights;
+                    toAdd.push(phillyCityLights);
+				}
 
-						var phillyCityLights = new FlxTypedGroup<FlxSprite>();
-						if (FlxG.save.data.distractions)
-						{
-							swagGroup['phillyCityLights'] = phillyCityLights;
-                            toAdd.push(phillyCityLights);
-						}
+				for (i in 0...5)
+				{
+					var light:FlxSprite = new FlxSprite(city.x).loadGraphic(Paths.stages('philly/win' + i));
+					light.scrollFactor.set(0.3, 0.3);
+					light.visible = false;
+					light.setGraphicSize(Std.int(light.width * 0.85));
+					light.updateHitbox();
+					light.antialiasing = FlxG.save.data.antialiasing;
+					phillyCityLights.add(light);
+				}
 
-						for (i in 0...5)
-						{
-							var light:FlxSprite = new FlxSprite(city.x).loadGraphic(Paths.stages('philly/win' + i));
-							light.scrollFactor.set(0.3, 0.3);
-							light.visible = false;
-							light.setGraphicSize(Std.int(light.width * 0.85));
-							light.updateHitbox();
-							light.antialiasing = FlxG.save.data.antialiasing;
-							phillyCityLights.add(light);
-						}
+				var streetBehind:FlxSprite = new FlxSprite(-40, 50).loadGraphic(Paths.stages('philly/behindTrain'));
+				swagBacks['streetBehind'] = streetBehind;
+                toAdd.push(streetBehind);
 
-						var streetBehind:FlxSprite = new FlxSprite(-40, 50).loadGraphic(Paths.stages('philly/behindTrain'));
-						swagBacks['streetBehind'] = streetBehind;
-                        toAdd.push(streetBehind);
+				var phillyTrain = new FlxSprite(2000, 360).loadGraphic(Paths.stages('philly/train'));
+				if (FlxG.save.data.distractions)
+				{
+					swagBacks['phillyTrain'] = phillyTrain;
+                    toAdd.push(phillyTrain);
+				}
 
-						var phillyTrain = new FlxSprite(2000, 360).loadGraphic(Paths.stages('philly/train'));
-						if (FlxG.save.data.distractions)
-						{
-							swagBacks['phillyTrain'] = phillyTrain;
-                            toAdd.push(phillyTrain);
-						}
-						// var cityLights:FlxSprite = new FlxSprite().loadGraphic(AssetPaths.win0.png);
-
-						var street:FlxSprite = new FlxSprite(-40, streetBehind.y).loadGraphic(Paths.stages('philly/street'));
-						swagBacks['street'] = street;
-                        toAdd.push(street);
-					}
-				case 'limo':
+				var street:FlxSprite = new FlxSprite(-40, streetBehind.y).loadGraphic(Paths.stages('philly/street'));
+				swagBacks['street'] = street;
+                toAdd.push(street);
+			}
+				
+			case 'limo':
 					{
 						camZoom = 0.90;
 
@@ -205,7 +153,7 @@ class Stage
 						/*if (FlxG.save.data.distractions)
 						{
 							var grpLimoDancers = new FlxTypedGroup<BackgroundDancer>();
-							swagGroup['grpLimoDancers'] = grpLimoDancers;
+						     swagGroup['grpLimoDancers'] = grpLimoDancers;
                             toAdd.push(grpLimoDancers);
 
 							for (i in 0...5)

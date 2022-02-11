@@ -20,7 +20,7 @@ class Main extends Sprite
 	var initialState:Class<FlxState> = TitleState; // The FlxState the game starts with.
 	var zoom:Float = -1; // If -1, zoom is automatically calculated to fit the window dimensions.
 	var framerate:Int = 120; // How many frames per second the game should run at.
-	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
+	var skipSplash:Bool = false; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
 
 	public static var instance:Main;
@@ -86,26 +86,31 @@ class Main extends Sprite
 	}
 
 	var game:FlxGame;
-	var fpsCounter:FpsCount;
+	public static var fpsCounter:FpsCount;
 
-	public function toggleFPS(fpsEnabled:Bool):Void {
+	public function toggleFPS(fpsEnabled:Bool):Void 
+	{
 		//fpsCounter.visible = fpsEnabled;
 		fpsCounter.visible = true;
 	}
 
-	public function changeFPSColor(color:FlxColor){
+	public function changeFPSColor(color:FlxColor)
+	{
 		fpsCounter.textColor = color;
 	}
 
-	public function setFPSCap(cap:Float){
+	public function setFPSCap(cap:Float)
+	{
 		openfl.Lib.current.stage.frameRate = cap;
 	}
 
-	public function getFPSCap():Float{
+	public function getFPSCap():Float
+	{
 		return openfl.Lib.current.stage.frameRate;
 	}
 
-	public function getFPS():Float{
+	public function getFPS():Float
+	{
 		return fpsCounter.currentFPS;
 	}
 }

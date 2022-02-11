@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="Middle.png">
+	<!-- Created with Adobe Animate version 20.5.0.29329 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Middle0000" x="0" y="0" width="169" height="169"/>
+	<SubTexture name="Middle Hit0000" x="269" y="0" width="251" height="249"/>
+	<SubTexture name="Middle Hit0001" x="520" y="0" width="251" height="249"/>
+	<SubTexture name="Middle Hit0002" x="771" y="0" width="251" height="249"/>
+	<SubTexture name="Middle Hit0003" x="771" y="0" width="251" height="249"/>
+	<SubTexture name="Middle Hold0000" x="169" y="0" width="50" height="44"/>
+	<SubTexture name="Middle Pressed0000" x="0" y="249" width="161" height="160"/>
+	<SubTexture name="Middle Pressed0001" x="0" y="249" width="161" height="160"/>
+	<SubTexture name="Middle Pressed0002" x="161" y="249" width="161" height="160"/>
+	<SubTexture name="Middle Pressed0003" x="161" y="249" width="161" height="160"/>
+	<SubTexture name="Middle Static0000" x="322" y="249" width="169" height="169"/>
+	<SubTexture name="Middle Tail0000" x="219" y="0" width="50" height="64"/>
+</TextureAtlas>

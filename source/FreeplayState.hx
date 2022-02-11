@@ -29,6 +29,7 @@ import flixel.addons.display.FlxBackdrop;
 import flixel.util.FlxStringUtil;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import flixel.addons.ui.FlxUIDropDownMenu;
 
 #if windows
 import Discord.DiscordClient;
@@ -36,16 +37,13 @@ import Discord.DiscordClient;
 
 using StringTools;
 
-enum Sort{ Name; Week; ChartAuthor; SongArtist; }
-
-class FreeplayState extends MusicBeatState{
-
+class FreeplayState extends MusicBeatState
+{
 	public static var songs:Array<SongMetadata> = [];
 	public static var catagories:Array<String> = [];
 	public static var catagorySongs:Array<Array<SongMetadata>> = [];
 	public var group:Array<Dynamic> = [];
 	var initSonglist:Array<String> = [];
-	var sortOrder:Sort = Sort.Week;
 
 	public static var currentSelected:Int = 0;
 	public static var currentDifficulty:Int = 1;
@@ -65,6 +63,9 @@ class FreeplayState extends MusicBeatState{
 	
 	var bg:FlxSprite;
 
+	var lastPanel:FlxSprite;
+	var lastPanelOldX:Float;
+	var lastPanelOldY:Float;
 	
 	private var grpSongs:Array<Array<FlxObject>>;
 	private var grpBackgrounds:Array<FlxSprite>;
@@ -80,19 +81,24 @@ class FreeplayState extends MusicBeatState{
 	var followTarget:FlxObject;
 	var prevCamFollow:FlxObject;
 
-	public static function loadDiff(diff:Int, format:String, name:String, array:Array<SwagSong>) {
+	var difficulty:String = "Normal";
+
+	public static function loadDiff(diff:Int, format:String, name:String, array:Array<SwagSong>) 
+	{
 		try 
 		{
-			var difficulty = Utility.difficultyArray[diff];
+			var diff = Utility.difficultyArray[diff];
 			
-			array.push(Song.loadFromJson(name,difficulty.toLowerCase()));
+			array.push(Song.loadFromJson(name, diff.toLowerCase()));
 		}
-
-		catch(ex){trace(ex);}
+		catch(ex)
+		{
+			// error
+		}
 	}
 
-	override function create(){
-
+	override function create()
+	{
 		persistentUpdate = true;
 		songData = [];
 		songs = [];
@@ -107,10 +113,9 @@ class FreeplayState extends MusicBeatState{
 
 		var ui_tex = Paths.getSparrowAtlas('ui/CampaignAssets');
 
-		bg = new FlxSprite().loadGraphic(Paths.image('ui/Backgrounds/FunkinBG', 'preload'));
+		bg = new FlxSprite().loadGraphic(Paths.image('ui/Backgrounds/MainBG', 'preload'));
 		bg.scrollFactor.set();
 		bg.setGraphicSize(1920,1080);
-		bg.color = 0xFFFDE871;
 		bg.screenCenter();
 	
 		followTarget = new FlxObject(0, 0, 1, 1);
@@ -127,11 +132,9 @@ class FreeplayState extends MusicBeatState{
 		grpSongs = new Array<Array<FlxObject>>();
 		var loadedSongs:Int = 0;
 		
-
 		for (i in 0...songs.length) 
 		{			
 			createPanel(songs[i].songName, "", i, true, songs[i]);
-
 			loadedSongs++;
 		}
 
@@ -206,7 +209,7 @@ class FreeplayState extends MusicBeatState{
 		songInfo.setFormat(Paths.font("vcr.ttf"),15);
 		songInfo.color = FlxColor.BLACK;
 
-		var icon:FlxSprite = new FlxSprite(songText.x + 400, songText.y + -10).loadGraphic("assets/songs/" + title + "/icon.png"); // The icon next to the song name
+		var icon:FlxSprite = new FlxSprite(songText.x + 400, songText.y + -10).loadGraphic("songs/" + title + "/icon.png"); // The icon next to the song name
 		icon.setGraphicSize(100,100);
 		icon.updateHitbox();
 			
@@ -218,9 +221,26 @@ class FreeplayState extends MusicBeatState{
 		grpSongs.push(elements);
 	}
 	
+	var camLerp:Float = 0.1;
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		// yoinked from mic'd up LMFAOOO
+		for (spr in grpBackgrounds)
+		{
+			//spr.scale.set(FlxMath.lerp(spr.scale.x, 0.8, camLerp / ((cast (Lib.current.getChildAt(0), Main)).getFPS() / 60), FlxMath.lerp(spr.scale.y, 0.8, 0.4 / (cast (Lib.current.getChildAt(0), Main)).getFPS() / 60)));
+			spr.y = FlxMath.lerp(spr.y, 40 + (spr.ID * 200), 0.4 / ( (cast (Lib.current.getChildAt(0), Main)).getFPS() / 60));
+	
+			if (spr.ID == currentSelected)
+			{
+				//spr.scale.set(FlxMath.lerp(spr.scale.x, 1.1, camLerp / ((cast (Lib.current.getChildAt(0), Main)).getFPS() / 60), FlxMath.lerp(spr.scale.y, 1.1, 0.4 / (cast (Lib.current.getChildAt(0), Main)).getFPS() / 60))));
+				spr.y = FlxMath.lerp(spr.y, -10 + (spr.ID * 200), 0.4 / ((cast (Lib.current.getChildAt(0), Main)).getFPS() / 60));
+			}
+	
+			spr.updateHitbox();
+		}
 
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.4));
 
@@ -304,12 +324,19 @@ class FreeplayState extends MusicBeatState{
 				GlobalData.latestDiff = currentDifficulty;
 				PlayState.SONG = hmm;
 				editors.ChartingState.fromSongMenu = true;
-				FlxG.switchState(new editors.ChartingState());
+
+				if (FileSystem.exists("songs/" + songFormat.toLowerCase() + "/" + Utility.difficultyFromInt(currentDifficulty) + ".funkin"))
+				{
+					FlxG.switchState(new editors.ChartingState());
+				}
+				else
+				{
+					Disclamer(currentDifficulty);
+				}
 			}
 			catch(ex)
 			{
 				Disclamer(currentDifficulty);
-				trace("You screwed up gg bro: " + ex);
 			}
 		}
 	}
@@ -361,7 +388,6 @@ class FreeplayState extends MusicBeatState{
 				PlayState.storyDifficulty = currentDifficulty;
 				PlayState.storyWeek = songs[currentSelected].week;
 				trace('Current Week: ' + PlayState.storyWeek);
-				LoadingState.loadAndSwitchState(new PlayState());
 			}
 		}
 	}
@@ -370,14 +396,15 @@ class FreeplayState extends MusicBeatState{
 	{
 		currentDifficulty += change;
 
+
 		if (currentDifficulty < 0)
 			currentDifficulty = 4;
+
 		if (currentDifficulty > 4)
 			currentDifficulty = 0;
 		
 		GlobalData.latestDiff = currentDifficulty;
 
-		// adjusting the highscore song name to be compatible (changeDiff)
 		var songHighscore = StringTools.replace(songs[currentSelected].songName, " ", "-");
 		songHighscore = Utility.songLowercase(songHighscore);
 		
@@ -385,24 +412,24 @@ class FreeplayState extends MusicBeatState{
 		intendedScore = Highscore.getScore(songHighscore, currentDifficulty);
 		combo = Highscore.getCombo(songHighscore, currentDifficulty);
 		#end
-		diffText.text = Utility.difficultyFromInt(currentDifficulty).toUpperCase();
+
+		diffText.text = "< " + Utility.difficultyFromInt(currentDifficulty).toUpperCase() + " >";
 	}
 
 	function changeSelection(change:Int = 0, direction:String = "down")
 	{
 		currentSelected += change;
 
-		if (currentSelected <= 0) // if the current selected is less than 0
-			currentSelected = songs.length; // set it to the max it can go
+		if (currentSelected <= 0)
+			currentSelected = songs.length; 
 
-		if (currentSelected >= songs.length) // if current selecteds i bigger or equal to the max it can go
-			currentSelected = 0; // set it to 0
-		
+		if (currentSelected >= songs.length)
+			currentSelected = 0;
+
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-
 		FlxG.sound.playMusic(Paths.inst(songs[currentSelected].songName));
 
-		followTarget.y = grpSongs[currentSelected][0].y + 100; // ig just like put the pos of camera on the first element in the objs (prob the bg)
+		followTarget.y = grpBackgrounds[currentSelected].y + 100;
 		
 		for (i in 0...grpSongs.length)
 		{
@@ -421,7 +448,7 @@ class FreeplayState extends MusicBeatState{
 		{
 			case "none":
 				#if sys
-				initSonglist = sys.FileSystem.readDirectory("assets/songs");
+				initSonglist = sys.FileSystem.readDirectory("songs");
 				#else
 				initSonglist = Utility.coolTextFile(Paths.txt('data/freeplaySonglist'));
 				#end

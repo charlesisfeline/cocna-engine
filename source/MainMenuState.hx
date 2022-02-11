@@ -18,12 +18,19 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.app.Application;
 import flixel.input.keyboard.FlxKey;
+import openfl.net.FileReference;
+import Menu.SwagMenu;
+import haxe.Json;
+import openfl.events.Event;
+import openfl.events.IOErrorEvent;
+import openfl.events.IOErrorEvent;
+import openfl.events.IOErrorEvent;
 
 using StringTools;
 
 class MainMenuState extends MusicBeatState
 {
-	public static var engineVer:String = '0.1 Beta';
+	public static var version:String = 'v0.2.7.1';
 	public static var curSelected:Int = 0;
 
 	// Ui Elements //
@@ -50,12 +57,13 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
-		FlxG.save.bind('cuzsiemod_data', 'cuzsiedev'); 
+		FlxG.save.bind('cuzsie-engine', 'cuzsie');
 
 		KadeEngineData.initSave();
 		PlayerSettings.init();
 		Conductor.changeBPM(102);
 		FlxG.mouse.visible = true;	
+
 		#if ALLOW_DISCORD_RPC
 		DiscordClient.initialize();
 		DiscordClient.changePresence("In the Menus", null); 
@@ -72,20 +80,20 @@ class MainMenuState extends MusicBeatState
 		persistentUpdate = persistentDraw = true;
 
 		var yScroll:Float = Math.max(0.25 - (0.05 * (optionShit.length - 4)), 0.1);
-		var bgPath:String = "FunkinBG";
+		var bgPath:String = "MainBG";
 		switch(UserPrefs.seasonalBackgrounds){case true: bgPath="osu/"+Utility.osu_sBackgroundSeason+"/"+Utility.getNewOsuBg();default:}
 
 		bg = new FlxSprite(-80).loadGraphic(Paths.image('ui/Backgrounds/' + bgPath));
 		bg.scrollFactor.set(0, yScroll);
-		bg.setGraphicSize(1920,1080);
+		bg.setGraphicSize(Std.int(bg.width * 1.175));
 		bg.updateHitbox();
 		bg.screenCenter();
 		bg.antialiasing = true;
-		if (!UserPrefs.seasonalBackgrounds){bg.color = 0xFFFDE871;}
+		// if (!UserPrefs.seasonalBackgrounds){bg.color = 0xFFFDE871;}
 
 		magenta = new FlxSprite(-80).loadGraphic(Paths.image('ui/Backgrounds/' + bgPath));
 		magenta.scrollFactor.set(0, yScroll);
-		magenta.setGraphicSize(1920,1080);
+		magenta.setGraphicSize(Std.int(bg.width * 1.175));
 		magenta.updateHitbox();
 		magenta.screenCenter();
 		magenta.visible = false;
@@ -95,7 +103,7 @@ class MainMenuState extends MusicBeatState
 		camFollow = new FlxObject(0, 0, 1, 1);
 		camFollowPos = new FlxObject(0, 0, 1, 1);
 
-		versionShit = new FlxText(9, FlxG.height - 44, 0, "Cuzsie Engine v" + engineVer, 12);
+		versionShit = new FlxText(1, FlxG.height - 44, 0, version, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
@@ -179,6 +187,11 @@ class MainMenuState extends MusicBeatState
 			{
 				Select();
 			}
+
+			if (FlxG.keys.justPressed.FIVE)
+			{
+				generateTestMenu();
+			}
 		}
 
 		super.update(elapsed);
@@ -191,18 +204,12 @@ class MainMenuState extends MusicBeatState
 
 		// debug keys
 
-		if (FlxG.keys.justPressed.FIVE)
+		#if debug
+		if (FlxG.keys.justPressed.SEVEN)
 		{
-			FlxG.switchState(new menus.BaseListTest());
+			FlxG.switchState(new DevDebugMenu());
 		}
-		if (FlxG.keys.justPressed.SIX)
-		{
-			FlxG.switchState(new ErrorFailsave());
-		}
-		if(FlxG.keys.justPressed.EIGHT)
-		{
-			FlxG.switchState(new menus.MenuBuilder());
-		}
+		#end
 	}
 
 	public function Select()
@@ -281,4 +288,61 @@ class MainMenuState extends MusicBeatState
 			}
 		});
 	}
+
+	var _file:FileReference;
+
+	// DONT USE THIS im just fucking around
+	function generateTestMenu()
+	{
+		var daMenu:SwagMenu = {Buttons: [new FlxMenuButton("storymode", new StoryMenuState())]};
+		
+		var json = 
+		{
+			"menu": daMenu
+		};
+
+		var data:String = Json.stringify(json);
+
+		if ((data != null) && (data.length > 0))
+		{
+			_file = new FileReference();
+			_file.addEventListener(Event.COMPLETE, onSaveComplete);
+			_file.addEventListener(Event.CANCEL, onSaveCancel);
+			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+			_file.save(data.trim(), "testMenu.dat");
+		}
+	}
+
+		function onSaveComplete(_):Void
+		{
+			_file.removeEventListener(Event.COMPLETE, onSaveComplete);
+			_file.removeEventListener(Event.CANCEL, onSaveCancel);
+			_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+			_file = null;
+			FlxG.log.notice("Successfully saved LEVEL DATA.");
+		}
+	
+		/**
+		 * Called when the save file dialog is cancelled.
+		 */
+		function onSaveCancel(_):Void
+		{
+			_file.removeEventListener(Event.COMPLETE, onSaveComplete);
+			_file.removeEventListener(Event.CANCEL, onSaveCancel);
+			_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+			_file = null;
+		}
+	
+		/**
+		 * Called if there is an error while saving the gameplay recording.
+		 */
+		function onSaveError(_):Void
+		{
+			_file.removeEventListener(Event.COMPLETE, onSaveComplete);
+			_file.removeEventListener(Event.CANCEL, onSaveCancel);
+			_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+			_file = null;
+			FlxG.log.error("Problem saving Level data");
+		}
+	
 }

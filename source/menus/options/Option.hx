@@ -115,11 +115,11 @@ class Option extends FlxObject
 
 	public function getValue():Dynamic
 	{
-		return Reflect.getProperty(UserPrefs, variable);
+		return Reflect.getProperty(ClientPrefs, variable);
 	}
 	public function setValue(value:Dynamic)
 	{
-		Reflect.setProperty(UserPrefs, variable, value);
+		Reflect.setProperty(ClientPrefs, variable, value);
 	}
 
 	public function setChild(child:Alphabet)

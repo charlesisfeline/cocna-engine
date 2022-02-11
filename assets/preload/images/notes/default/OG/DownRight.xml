@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="DownRight.png">
+	<!-- Created with Adobe Animate version 20.5.0.29329 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Down Right0000" x="0" y="0" width="150" height="152"/>
+	<SubTexture name="Down Right Hit0000" x="150" y="0" width="150" height="152"/>
+	<SubTexture name="Down Right Pressed0000" x="0" y="152" width="150" height="152"/>
+	<SubTexture name="Down Right Static0000" x="150" y="152" width="150" height="152"/>
+	<SubTexture name="Grey Hold0000" x="300" y="0" width="50" height="44"/>
+	<SubTexture name="Grey Hold End0000" x="350" y="0" width="50" height="64"/>
+</TextureAtlas>

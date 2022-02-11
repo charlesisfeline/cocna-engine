@@ -58,24 +58,16 @@ class KeyBindMenu extends FlxSubState
     [
         "LEFT", 
         "DOWN", 
-        "MIDDLE", 
         "UP", 
-        "RIGHT",
-        "6 Left",
-        "6 Right",
-        "RESET"
+        "RIGHT"
     ];
 
     var defaultKeys:Array<String> = 
     [
         "A", 
         "S", 
-        "MIDDLE", 
         "W", 
-        "D",
-        "LEFT",
-        "RIGHT", 
-        "R"
+        "D"
     ];
     
     var defaultGpKeys:Array<String> = 
@@ -83,20 +75,15 @@ class KeyBindMenu extends FlxSubState
         "DPAD_LEFT", 
         "DPAD_DOWN", 
         "DPAD_UP", 
-        "DPAD_RIGHT",
-        'R'
+        "DPAD_RIGHT"
     ];
 
     var keys:Array<String> = 
     [
         FlxG.save.data.leftBind,
         FlxG.save.data.downBind,
-        FlxG.save.data.middleBind,
         FlxG.save.data.upBind,
-        FlxG.save.data.rightBind,
-        FlxG.save.data.sixLeftBind,
-        FlxG.save.data.sixRightBind,
-        FlxG.save.data.killBind
+        FlxG.save.data.rightBind
     ];
 
     // dumb way to do this but you cant stop me >:)
@@ -115,8 +102,7 @@ class KeyBindMenu extends FlxSubState
         FlxG.save.data.gpleftBind,
         FlxG.save.data.gpdownBind,
         FlxG.save.data.gpupBind,
-        FlxG.save.data.gprightBind,
-        FlxG.save.data.gpkillBind
+        FlxG.save.data.gprightBind
     ];
 
     var blacklist:Array<String> = 

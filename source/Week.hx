@@ -32,7 +32,7 @@ class Week
     {
         try
         {    
-            trace('Loading song file');
+            trace('Loading week file');
  
             var rawJson = Assets.getText('assets/weeks/$file/data.json');
     

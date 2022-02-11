@@ -27,18 +27,27 @@ import Controls;
 
 using StringTools;
 
-class AppearanceOptions extends BaseOptionsMenu
+class AppearanceOptions extends OptionCategory
 {
 	public function new()
 	{
 		title = 'Appearance Settings';
-		rpcTitle = 'Appearance Settings Menu'; //for Discord Rich Presence
+		rpcTitle = 'Appearance Settings Menu';
 		
-		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
+		var option:Option = new Option
+		(
+			'Classic Title',
+			'Uses the Ludem Dare Demo title screen. (Will be active next time you relaunch the game.)',
+			'classicTitle',
+			'bool',
+			false
+		);
+		addOption(option);
+
 		var option:Option = new Option
 		(
 			'Osu! Seasonal Backgrounds',
-			'Replace the default Friday Night Funkin menu backgrounds with the Osu! Seasonal Backgrounds',
+			'Replace the default Friday Night Funkin menu backgrounds with the Osu! Seasonal Backgrounds)',
 			'seasonalBackgrounds',
 			'bool',
 			false

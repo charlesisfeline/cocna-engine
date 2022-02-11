@@ -43,7 +43,7 @@ class FpsCount extends TextField
 
 		currentFPS = 0;
 		selectable = false;
-		defaultTextFormat = new TextFormat(openfl.utils.Assets.getFont("assets/fonts/vcr.ttf").fontName, 15, color);
+		defaultTextFormat = new TextFormat(openfl.utils.Assets.getFont("assets/fonts/vcr.ttf").fontName, 12, color);
 		mouseEnabled = false;
 		text = "FPS: ";
 		width += 200;
@@ -96,8 +96,7 @@ class FpsCount extends TextField
 		if (currentCount != cacheCount /*&& visible*/)
 		{
 			text = 
-            ("FPS: " + currentFPS) + 
-            ("\nCuzsie Engine v" + MainMenuState.engineVer);
+            ("FPS: " + currentFPS);
 		}
 
 		visible = true;

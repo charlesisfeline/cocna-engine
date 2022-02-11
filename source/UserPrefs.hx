@@ -27,10 +27,13 @@ class UserPrefs
 	public static var ghostTapping:Bool = true;
 	public static var hideTime:Bool = false;
 	public static var seasonalBackgrounds:Bool = false;
+	public static var classicTitle:Bool = false;
 
 
 	public static function saveSettings() 
 	{
+		FlxG.save.bind('cuzsie-engine', 'cuzsie');
+		
 		FlxG.save.data.downScroll = downScroll;
 		FlxG.save.data.middleScroll = middleScroll;
 		FlxG.save.data.showFPS = showFPS;
@@ -47,6 +50,7 @@ class UserPrefs
 		FlxG.save.data.ghostTapping = ghostTapping;
 		FlxG.save.data.hideTime = hideTime;
 		FlxG.save.data.seasonalBackgrounds = seasonalBackgrounds;
+		FlxG.save.data.classicTitle = classicTitle;
 		FlxG.save.flush();
 
 		var save:FlxSave = new FlxSave();
@@ -55,6 +59,8 @@ class UserPrefs
 
 	public static function loadPrefs() 
 	{
+		FlxG.save.bind('cuzsie-engine', 'cuzsie');
+
 		if(FlxG.save.data.downScroll != null) {
 			downScroll = FlxG.save.data.downScroll;
 		}
@@ -73,22 +79,15 @@ class UserPrefs
 		if(FlxG.save.data.lowQuality != null) {
 			lowQuality = FlxG.save.data.lowQuality;
 		}
-		if(FlxG.save.data.framerate != null) {
-			framerate = FlxG.save.data.framerate;
-			if(framerate > FlxG.drawFramerate) {
-				FlxG.updateFramerate = framerate;
-				FlxG.drawFramerate = framerate;
-			} else {
-				FlxG.drawFramerate = framerate;
-				FlxG.updateFramerate = framerate;
-			}
-		}
-		/*if(FlxG.save.data.cursing != null) {
-			cursing = FlxG.save.data.cursing;
-		}
-		if(FlxG.save.data.violence != null) {
-			violence = FlxG.save.data.violence;
-		}*/
+
+
+		if (FlxG.save.data.fpsCap == null)
+			FlxG.save.data.fpsCap = 120;
+		if (FlxG.save.data.fpsCap != null)
+			framerate = FlxG.save.data.fpsCap;
+		if (FlxG.save.data.fpsCap > 285 || FlxG.save.data.fpsCap < 60)
+			FlxG.save.data.fpsCap = 120;
+
 		if(FlxG.save.data.camZooms != null) {
 			camZooms = FlxG.save.data.camZooms;
 		}
@@ -116,6 +115,12 @@ class UserPrefs
 			seasonalBackgrounds = FlxG.save.data.seasonalBackgrounds;
 		}
 
+		if(FlxG.save.data.classicTitle != null) {
+			classicTitle = FlxG.save.data.classicTitle;
+		}
+
 		var save:FlxSave = new FlxSave();
+
+		trace("Settings Loaded!");
 	}
 }

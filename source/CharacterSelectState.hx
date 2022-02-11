@@ -16,7 +16,7 @@ import flixel.tweens.FlxTween;
 
 class CharacterSelectState extends MusicBeatState
 {
-	public var character:Character;
+	public var character:CustomCharacter;
 	
 	public var current:Int;
 	
@@ -69,7 +69,7 @@ class CharacterSelectState extends MusicBeatState
 	{
 		super.create();
 
-		FlxG.save.bind('cuzsiemod_data', 'cuzsiedev');
+		FlxG.save.bind('cuzsie-engine', 'cuzsie');
 		
 		FlxG.camera.zoom = 0.75;
 		FlxG.camera.fade(FlxColor.BLACK, 0.8, true);
@@ -93,7 +93,7 @@ class CharacterSelectState extends MusicBeatState
 		overlay.antialiasing = true;
 		add(overlay);
 
-		character = new Character(FlxG.width / 2, FlxG.height / 2, "bf");
+		character = new CustomCharacter(FlxG.width / 2, FlxG.height / 2, "bf");
 		character.screenCenter();
 		character.y = FlxG.height / 2;
 		add(character);
@@ -190,12 +190,21 @@ class CharacterSelectState extends MusicBeatState
 		descriptionText.text = descriptionList[current];
 		try
 		{
-			character.changeCharacter(CharactersList[current]);
+			remove(character);
+			character = new CustomCharacter(FlxG.width / 2, FlxG.height / 2, CharactersList[current]);
+			character.screenCenter();
+			character.y = FlxG.height / 2;
+			add(character);
 		}
 		catch(ex)
 		{
 			trace(ex);
-			character.changeCharacter("bf");
+			
+			remove(character);
+			character = new CustomCharacter(FlxG.width / 2, FlxG.height / 2, "bf");
+			character.screenCenter();
+			character.y = FlxG.height / 2;
+			add(character);
 		}
 		
 		bg.color = colorList[current];

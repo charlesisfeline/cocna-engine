@@ -27,14 +27,13 @@ import Controls;
 
 using StringTools;
 
-class GameplayOptions extends BaseOptionsMenu
+class GameplayOptions extends OptionCategory
 {
 	public function new()
 	{
 		title = 'Gameplay Settings';
-		rpcTitle = 'Gameplay Settings Menu'; //for Discord Rich Presence
+		rpcTitle = 'Gameplay Settings Menu';
 		
-		//I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
 		var option:Option = new Option
 		(
 			'Downscroll',
@@ -65,31 +64,14 @@ class GameplayOptions extends BaseOptionsMenu
 		);
 		addOption(option);
 
-	
-
 		var option:Option = new Option
 		(
-			'Rating Offset',
-			'Changes how late/early you have to hit for a "Sick!"\nHigher values mean you have to hit later.',
-			'ratingOffset',
+			'Framerate',
+			"Change the ammount of frames per second your\ngame runs at.",
+			'framerate',
 			'int',
-			0
+			60
 		);
-		option.displayFormat = '%vms';
-		option.scrollSpeed = 20;
-		option.minValue = -30;
-		option.maxValue = 30;
-		addOption(option);
-		
-		var option:Option = new Option('Safe Frames',
-			'Changes how many frames you have for\nhitting a note earlier or late.',
-			'safeFrames',
-			'float',
-			10);
-		option.scrollSpeed = 5;
-		option.minValue = 2;
-		option.maxValue = 10;
-		option.changeValue = 0.1;
 		addOption(option);
 
 		super();

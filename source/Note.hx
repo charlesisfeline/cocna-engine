@@ -29,10 +29,10 @@ class Note extends FlxSprite
 		["Left", "Middle", "Right"], 
 		["Left", "Down", "Up", "Right"],  
 		["Left", "Down", "Middle", "Up", "Right"], 
-		["Left", "Down", "Right", "Left", "Down", "Right"], 
-		["Left", "Down", "Right", "Middle", "Left", "Down", "Right"], 
-		["Left", "Down", "Up", "Right", "Left", "Down", "Up", "Right"], 
-		[ "Left", "Down", "Up", "Right", "Middle","Left", "Down", "Up", "Right"] 
+		["Left", "Down", "Right", "Left 2", "Down 2", "Right 2"], 
+		["Left", "Down", "Right", "Middle", "Left 2", "Down 2", "Right 2"], 
+		["Left", "Down", "Up", "Right", "Left 2", "Down 2", "Up 2", "Right 2"], 
+		[ "Left", "Down", "Up", "Right", "Middle","Left 2", "Down 2", "Up 2", "Right 2"] 
 	];
 
     public static var widths:Array<Float> = 
@@ -82,134 +82,57 @@ class Note extends FlxSprite
 	public static var secNote2:Int = 5;
 
 	public var rating:String = "shit";
-	public var noteType:String = "normal";
 	public var customNoteName:String = '';
 
-	#if windows
-	public var customNoteData:ModchartState;
-	#end
-
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inCharter:Bool = false, noteType:String = "normal")
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inCharter:Bool = false)
 	{
 		super();
 
-		this.noteType = noteType;	
-		this.inCharter = inCharter;	
-		this.customNoteName = noteType;
-		#if windows
-		isCustomNote = FileSystem.exists("mods/note_types/" + customNoteName + '/data.lua'); // if the file exists
-		customNoteData = ModchartState.createModchartState("note", customNoteName);
-		customNoteData.executeState('onNoteSpawn',[customNoteName]);
-		customNoteData.type = "note";
-		#else
-		isCustomNote = false; // no custom notes for you BITCH
-		#end
-
 		if (prevNote == null)
-		{
-			prevNote = this; // If there is no previous note, set this to the previous note
-		}
+			prevNote = this;
 
+		this.inCharter = inCharter;	
 		this.prevNote = prevNote; 
+		this.noteData = noteData;
+		if (inCharter) {this.strumTime = strumTime;}
+		else {this.strumTime = Math.round(strumTime);}
+
 		isSustainNote = sustainNote;
 
-		x += 150; // Put the note off-screen
-		y -= 2000; // Put the note off-screen
+		x += 150;
+		y -= 2000;
 		
-		if (inCharter)
-		{
-			this.strumTime = strumTime;
-		}
-		else 
-		{
-			this.strumTime = Math.round(strumTime);
-		}
-			
+		if (this.strumTime < 0 ) {this.strumTime = 0;}
 
-		if (this.strumTime < 0 ) // If the strum time is less than 0
-		{
-			this.strumTime = 0; // Set the strum time to 0
-		}
-		
-		this.noteData = noteData;
 
-		var daStage:String = PlayState.curStage; // The current stage
+		if (PlayState.keyAmmount == 0) {PlayState.keyAmmount = 4;}
 
-		var noteTypeCheck:String = 'normal'; // The note style
+		frames = Paths.getSparrowAtlas('notes/default/${Note.staticKeyAnimations[PlayState.keyAmmount][noteData]}', 'preload');
 
-		frames = Paths.getSparrowAtlas("notes/Notes_" + FlxG.save.data.noteSkin, "preload");
-
-		animation.addByPrefix('greenScroll', 'Up0');
-		animation.addByPrefix('redScroll', 'Right0');
-		animation.addByPrefix('blueScroll', 'Down0');
-		animation.addByPrefix('purpleScroll', 'Left0');
-
-		animation.addByPrefix('purpleholdend', 'Purple Hold End');
-		animation.addByPrefix('greenholdend', 'Green Hold End');
-		animation.addByPrefix('redholdend', 'Red Hold End');
-		animation.addByPrefix('blueholdend', 'Blue Hold End');
-
-		animation.addByPrefix('purplehold', 'Purple Hold');
-		animation.addByPrefix('greenhold', 'Green Hold');
-		animation.addByPrefix('redhold', 'Red Hold');
-		animation.addByPrefix('bluehold', 'Blue Hold');
+		animation.addByPrefix('Scroll', '${Note.staticKeyAnimations[PlayState.keyAmmount][noteData]}0');
+		animation.addByPrefix('holdend', '${Note.staticKeyAnimations[PlayState.keyAmmount][noteData]} Tail');
+		animation.addByPrefix('hold', '${Note.staticKeyAnimations[PlayState.keyAmmount][noteData]} Hold');
 
 		setGraphicSize(Std.int(width * sizes[PlayState.keyAmmount]));
 		updateHitbox();
 		antialiasing = true;
 
-
-		switch (noteData)
-		{
-			case 0:
-				x += swagWidth * 0;
-				animation.play('purpleScroll');
-			case 1:
-				x += swagWidth * 1;
-				animation.play('blueScroll');
-			case 2:
-				x += swagWidth * 2;
-				animation.play('greenScroll');
-			case 3:
-				x += swagWidth * 3;
-				animation.play('redScroll');
-			case 4:
-				x += swagWidth * 4;
-				animation.play('redScroll');
-			case 5:
-				x += swagWidth * 5;
-				animation.play('redScroll');
-		}
+		animation.play('Scroll');
+		
+		x += swagWidth * noteData;
 
 		
 		if (FlxG.save.data.downscroll && sustainNote) 
-		{
 			flipY = true;
-		}
 			
-
-		if (isSustainNote && prevNote != null) // If its a sustain note and if the previous note isnt null
+		if (isSustainNote && prevNote != null)
 		{
 			noteScore * 0.2;
 			alpha = 0.6;
-
 			x += width / 2;
 
-			switch (noteData)
-			{
-				case 2:
-					animation.play('greenholdend');
-				case 3:
-					animation.play('redholdend');
-				case 1:
-					animation.play('blueholdend');
-				case 0:
-					animation.play('purpleholdend');
-				case 4:
-					animation.play('redholdend');
-				case 5:
-					animation.play('redholdend');
-			}
+
+			animation.play('holdend');
 
 			updateHitbox();
 
@@ -217,29 +140,13 @@ class Note extends FlxSprite
 
 			if (prevNote.isSustainNote)
 			{
-				switch (prevNote.noteData)
-				{
-					case 0:
-						prevNote.animation.play('purplehold');
-					case 1:
-						prevNote.animation.play('bluehold');
-					case 2:
-						prevNote.animation.play('greenhold');
-					case 3:
-						prevNote.animation.play('redhold');
-					case 4:
-						prevNote.animation.play('redhold');
-					case 5:
-						prevNote.animation.play('redhold');
-				}
-
+				prevNote.animation.play('hold');	
 
 				if(FlxG.save.data.scrollSpeed != 1)
 					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * FlxG.save.data.scrollSpeed;
 				else
 					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
 				prevNote.updateHitbox();
-				// prevNote.setGraphicSize();
 			}
 		}
 	}
@@ -247,11 +154,7 @@ class Note extends FlxSprite
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-
-
-		if (isCustomNote && !inCharter)
-			PlayState.instance.setHealth(customNoteData.getVar('health','float'));
-
+		
 		if (mustPress)
 		{
 			if (isSustainNote)

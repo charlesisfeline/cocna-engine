@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="Up 2.png">
+	<!-- Created with Adobe Animate version 20.5.0.29329 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Up 20000" x="0" y="0" width="157" height="154"/>
+	<SubTexture name="Up 2 Hit0000" x="257" y="0" width="236" height="232"/>
+	<SubTexture name="Up 2 Hit0001" x="493" y="0" width="236" height="232"/>
+	<SubTexture name="Up 2 Hit0002" x="729" y="0" width="236" height="232"/>
+	<SubTexture name="Up 2 Hit0003" x="729" y="0" width="236" height="232"/>
+	<SubTexture name="Up 2 Hold0000" x="157" y="0" width="50" height="44"/>
+	<SubTexture name="Up 2 Pressed0000" x="0" y="232" width="149" height="146"/>
+	<SubTexture name="Up 2 Pressed0001" x="0" y="232" width="149" height="146"/>
+	<SubTexture name="Up 2 Pressed0002" x="149" y="232" width="149" height="146"/>
+	<SubTexture name="Up 2 Pressed0003" x="149" y="232" width="149" height="146"/>
+	<SubTexture name="Up 2 Tail0000" x="207" y="0" width="50" height="64"/>
+	<SubTexture name="Up Static0000" x="298" y="232" width="157" height="153"/>
+</TextureAtlas>

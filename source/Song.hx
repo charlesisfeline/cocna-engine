@@ -71,9 +71,9 @@ class Song
 		{
 			var songFile = '$song/$difficulty';
 			
-			trace('Loading song file: assets/songs $songFile');
+			trace('Loading song file: assets/songs/ $songFile');
 			
-			var rawJson = Assets.getText('assets/songs/$song/$difficulty.funkin');
+			var rawJson = Assets.getText('songs/$song/$difficulty.funkin');
 
 			while (!rawJson.endsWith("}"))
 			{

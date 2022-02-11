@@ -27,7 +27,7 @@ class MenuCharacter extends FlxSprite
 		'dad' => new CharacterSetting(-15, 130),
 		'spooky' => new CharacterSetting(20, 30),
 		'pico' => new CharacterSetting(0, 0, 1.0, true),
-		'alpha' => new CharacterSetting(-30, 140, 0.85),
+		'mom' => new CharacterSetting(-30, 140, 0.85),
 		'parents-christmas' => new CharacterSetting(100, 130, 1.8),
 		'senpai' => new CharacterSetting(-40, -45, 1.4)
 	];

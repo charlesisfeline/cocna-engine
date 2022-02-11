@@ -29,7 +29,7 @@ using StringTools;
 
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['Controls', 'Arrows', 'Appearance', 'Gameplay', "Mods"];
+	var options:Array<String> = ['Controls', 'Arrows', 'Appearance', 'Gameplay', "Mods", "Documentation"];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
@@ -46,6 +46,8 @@ class OptionsState extends MusicBeatState
 				openSubState(new menus.options.GameplayOptions());
 			case 'Arrows':
 				openSubState(new menus.options.NoteSkinSelector());
+			case "Documentation":
+				fancyOpenURL("https://github.com/Cuzsie/vs-cuzsie-private/wiki");
 		}
 	}
 
@@ -75,7 +77,6 @@ class OptionsState extends MusicBeatState
 		}
 
 		changeSelection();
-		UserPrefs.saveSettings();
 
 		super.create();
 	}
@@ -83,7 +84,7 @@ class OptionsState extends MusicBeatState
 	override function closeSubState() 
 	{
 		super.closeSubState();
-		UserPrefs.saveSettings();
+		ClientPrefs.saveSettings();
 	}
 
 	override function update(elapsed:Float) 
@@ -102,6 +103,7 @@ class OptionsState extends MusicBeatState
 		if (controls.BACK) 
 		{
 			FlxG.sound.play(Paths.sound('cancelMenu'));
+			ClientPrefs.saveSettings();
 			FlxG.switchState(new MainMenuState());
 		}
 

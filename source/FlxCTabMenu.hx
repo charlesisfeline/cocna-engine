@@ -145,7 +145,7 @@ class FlxCTabMenu extends FlxUIGroup implements IResizable implements IFlxUIClic
 
 	/***PUBLIC***/
 	public function new(?back_:FlxSprite, ?tabs_:Array<IFlxUIButton>, ?tab_names_and_labels_:Array<{name:String, label:String}>, ?tab_offset:FlxPoint,
-			?stretch_tabs:Bool = false, ?tab_spacing:Null<Float> = null, ?tab_stacking:Array<String> = null)
+			?stretch_tabs:Bool = false, ?tab_spacing:Null<Float> = null, ?tab_stacking:Array<String> = null, ?tab_type:String)
 	{
 		super();
 
@@ -184,14 +184,51 @@ class FlxCTabMenu extends FlxUIGroup implements IResizable implements IFlxUIClic
 					fb.name = tdata.name;
 
 					// load default graphics
-					var graphic_names:Array<FlxGraphicAsset> = [
-					    Paths.loadImage(Paths.image("ui/FlxUI/tab_back", "preload")),
-						Paths.loadImage(Paths.image("ui/FlxUI/tab_back", "preload")),
-						Paths.loadImage(Paths.image("ui/FlxUI/tab_back", "preload")),
-						Paths.loadImage(Paths.image("ui/FlxUI/tab", "preload")),
-						Paths.loadImage(Paths.image("ui/FlxUI/tab", "preload")),
-						Paths.loadImage(Paths.image("ui/FlxUI/tab", "preload"))
-					];
+
+					// types troll
+					var graphic_names:Array<FlxGraphicAsset>;
+
+					switch (tab_type)
+					{
+						case "Regular":
+							graphic_names = [
+								FlxUIAssets.IMG_TAB_BACK,
+								FlxUIAssets.IMG_TAB_BACK,
+								FlxUIAssets.IMG_TAB_BACK,
+								FlxUIAssets.IMG_TAB,
+								FlxUIAssets.IMG_TAB,
+								FlxUIAssets.IMG_TAB
+							];
+						case "New":
+							graphic_names = [
+								Paths.loadImage(Paths.image("ui/FlxUI/tab_back", 'preload')),
+								Paths.loadImage(Paths.image("ui/FlxUI/tab_back", 'preload')),
+								Paths.loadImage(Paths.image("ui/FlxUI/tab_back", 'preload')),
+								Paths.loadImage(Paths.image("ui/FlxUI/tab", 'preload')),
+								Paths.loadImage(Paths.image("ui/FlxUI/tab", 'preload')),
+								Paths.loadImage(Paths.image("ui/FlxUI/tab", 'preload')),
+							];
+						case "Transparent Blackout":
+							graphic_names = [
+								Paths.loadImage(Paths.image("ui/FlxUI/trans-blackout/tab_back", 'preload')),
+								Paths.loadImage(Paths.image("ui/FlxUI/trans-blackout/tab_back", 'preload')),
+								Paths.loadImage(Paths.image("ui/FlxUI/trans-blackout/tab_back", 'preload')),
+								Paths.loadImage(Paths.image("ui/FlxUI/trans-blackout/tab", 'preload')),
+								Paths.loadImage(Paths.image("ui/FlxUI/trans-blackout/tab", 'preload')),
+								Paths.loadImage(Paths.image("ui/FlxUI/trans-blackout/tab", 'preload')),
+							];
+						default:
+							graphic_names = [
+								FlxUIAssets.IMG_TAB_BACK,
+								FlxUIAssets.IMG_TAB_BACK,
+								FlxUIAssets.IMG_TAB_BACK,
+								FlxUIAssets.IMG_TAB,
+								FlxUIAssets.IMG_TAB,
+								FlxUIAssets.IMG_TAB
+							];
+						
+					}
+
 					var slice9tab:Array<Int> = FlxStringUtil.toIntArray(FlxUIAssets.SLICE9_TAB);
 					var slice9_names:Array<Array<Int>> = [slice9tab, slice9tab, slice9tab, slice9tab, slice9tab, slice9tab];
 					fb.loadGraphicSlice9(graphic_names, 0, 0, slice9_names, FlxUI9SliceSprite.TILE_NONE, -1, true);

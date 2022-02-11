@@ -19,7 +19,6 @@ import Discord.DiscordClient;
 
 using StringTools;
 
-enum ListAllignment {Left; Middle; Right; Top; Bottom;}
 
 class BaseListMenu extends MusicBeatState
 {
@@ -28,14 +27,15 @@ class BaseListMenu extends MusicBeatState
 
     public var lastState:FlxState = null; 
     var includeIcons:Bool = false;
-    var allignment:ListAllignment = ListAllignment.Left;
+    var allignment:String = "Left";
     var itemList = [];
     private var iconArray:Array<HealthIcon> = [];
+	public var currentSelected:String = '';
 
 	override function create()
 	{
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('ui/Backgrounds/FunkinBG'));
-        bg.setGraphicSize(1920,1080);
+        bg.setGraphicSize(1280,720);
         bg.screenCenter();
         bg.color = 0xFFFDE871;
 		add(bg);
@@ -45,10 +45,13 @@ class BaseListMenu extends MusicBeatState
 
 		for (i in 0...itemList.length)
 		{
-			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, itemList[i], true, false, true);
+			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, itemList[i], true, false);
 			songText.isMenuItem = true;
 			songText.targetY = i;
 			listMenu.add(songText);
+
+			if (allignment == "Middle")
+				songText.screenCenter(X);
 
             if (includeIcons)
             {
@@ -84,7 +87,7 @@ class BaseListMenu extends MusicBeatState
 			FlxG.switchState(lastState);
 
 		if (accepted){
-
+			onPress();
         }
 	}
 
@@ -118,5 +121,12 @@ class BaseListMenu extends MusicBeatState
 			if (item.targetY == 0)
 				item.alpha = 1;
 		}
+
+		currentSelected = itemList[curSelected];
+	}
+
+	public function onPress():Void
+	{
+
 	}
 }

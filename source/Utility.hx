@@ -49,7 +49,10 @@ class Utility
 	
 	public static function difficultyFromInt(difficulty:Int):String
 	{
-		return difficultyArray[difficulty];
+		if (difficultyArray[difficulty] == null)
+			return "Null";
+		else
+			return difficultyArray[difficulty];
 	}
 
 	public static function coolTextFile(path:String):Array<String>

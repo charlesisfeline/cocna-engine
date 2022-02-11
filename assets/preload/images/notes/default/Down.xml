@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="Down.png">
+	<!-- Created with Adobe Animate version 20.5.0.29329 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Down0000" x="0" y="0" width="157" height="154"/>
+	<SubTexture name="Down Hit0000" x="257" y="0" width="238" height="235"/>
+	<SubTexture name="Down Hit0001" x="495" y="0" width="238" height="235"/>
+	<SubTexture name="Down Hit0002" x="733" y="0" width="238" height="235"/>
+	<SubTexture name="Down Hit0003" x="733" y="0" width="238" height="235"/>
+	<SubTexture name="Down Hold0000" x="157" y="0" width="50" height="44"/>
+	<SubTexture name="Down Pressed0000" x="0" y="235" width="149" height="146"/>
+	<SubTexture name="Down Pressed0001" x="0" y="235" width="149" height="146"/>
+	<SubTexture name="Down Pressed0002" x="149" y="235" width="149" height="146"/>
+	<SubTexture name="Down Pressed0003" x="149" y="235" width="149" height="146"/>
+	<SubTexture name="Down Static0000" x="298" y="235" width="157" height="153"/>
+	<SubTexture name="Down Tail0000" x="207" y="0" width="50" height="64"/>
+</TextureAtlas>

@@ -141,6 +141,11 @@ class Paths
 	{
 		return getPath('data/$key.txt', TEXT, library);
 	}
+	
+	inline static public function dat(key:String, ?library:String)
+	{
+		return getPath('data/$key.dat', TEXT, library);
+	}
 
 	inline static public function xml(key:String, ?library:String)
 	{
@@ -177,7 +182,7 @@ class Paths
 		var songLowercase = StringTools.replace(song, " ", "-").toLowerCase();
 		songLowercase = Utility.songLowercase(songLowercase);
 
-		return 'assets/songs/${songLowercase}/Voices.$SOUND_EXT';
+		return 'songs/${songLowercase}/Voices.$SOUND_EXT';
 	}
 	static public function video(key:String)
 	{
@@ -190,7 +195,7 @@ class Paths
 		var songLowercase = StringTools.replace(song, " ", "-").toLowerCase();
 		songLowercase = Utility.songLowercase(songLowercase);
 
-		return 'assets/songs/${songLowercase}/Inst.$SOUND_EXT';
+		return 'songs/${songLowercase}/Inst.$SOUND_EXT';
 	}
 
 	inline static public function image(key:String, ?library:String)
