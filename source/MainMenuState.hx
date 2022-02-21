@@ -45,7 +45,8 @@ class MainMenuState extends MusicBeatState
 	[
 		'story mode', 
 		'freeplay', 
-		'credits', 
+		'credits',
+		'mods', 
 		'donate', 
 		'options'
 	];

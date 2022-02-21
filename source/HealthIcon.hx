@@ -29,7 +29,6 @@ class HealthIcon extends FlxSprite
 		animation.add('cuzsie-pissed', [8, 9], 0, false, isPlayer);
 		animation.add('face', [10, 11], 0, false, isPlayer);
 		animation.add('dad', [12, 13], 0, false, isPlayer);
-		animation.add('cuzsie', [12, 13], 0, false, isPlayer);
 		animation.add('none', [22, 22], 0, false, isPlayer);
 		animation.add('spirit', [23, 23], 0, false, isPlayer);
 		animation.add('bf-old', [14, 15], 0, false, isPlayer);
@@ -38,8 +37,6 @@ class HealthIcon extends FlxSprite
 		animation.add('gf-pixel', [16], 0, false, isPlayer);
 		animation.add('gf-dark', [22, 22], 0, false, isPlayer);
 		animation.add('parents-christmas', [17, 18], 0, false, isPlayer);
-		animation.add('cuzsie-and-nitro', [17, 18], 0, false, isPlayer);
-		animation.add('alpha', [19, 20], 0, false, isPlayer);
 		animation.add('monster-christmas', [19, 20], 0, false, isPlayer);
 		animation.play(char);
 

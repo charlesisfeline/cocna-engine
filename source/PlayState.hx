@@ -249,10 +249,10 @@ class PlayState extends MusicBeatState
 		instance = this;
 		FlxG.mouse.visible = false;
 
-		downscroll = ClientPrefs.downScroll;
-		scrollSpeed = SONG.speed;
-		botplay = FlxG.save.data.botplay;
-		middlescroll = ClientPrefs.middleScroll;
+		try {downscroll = ClientPrefs.downScroll;} catch(ex) {downscroll = false;}
+		try {scrollSpeed = SONG.speed;} catch(ex) {scrollSpeed = 1.5;}
+		try {botplay = FlxG.save.data.botplay;} catch(ex) {botplay = false;}
+		try {middlescroll = ClientPrefs.middleScroll;} catch(ex) {middlescroll = false;}
 
 		if (FlxG.save.data.fpsCap > 290)
 			(cast (Lib.current.getChildAt(0), Main)).setFPSCap(800);
@@ -283,6 +283,8 @@ class PlayState extends MusicBeatState
 		FlxG.camera.focusOn(camFollow.getPosition());
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 		FlxG.fixedTimestep = false;
+		camGame.width = Lib.application.window.width;
+		camGame.height = Lib.application.window.height;
 
 		begin();
 
@@ -387,28 +389,6 @@ class PlayState extends MusicBeatState
 			#if ENABLE_LUA endLua(); #end
 		}
 		
-		
-		
-		
-		
-		
-		
-		if (SONG.charFly)
-		{
-			dad.y += Math.sin(floatshit);	
-			player3.y += Math.sin(floatshit);	
-		}
-		
-		if(SONG.bfFly)
-		{
-			boyfriend.y += Math.sin(floatshitbf);
-		}
-
-		characteroverride = FlxG.save.data.curSkin;
-		floatshit += 0.2;
-		flying += 0.05;
-		floatshitbf += 0.03;
-
 		if (useVideo && GlobalVideo.get() != null && !stopUpdate)
 		{		
 			if (GlobalVideo.get().ended && !removedVideo)
@@ -458,12 +438,13 @@ class PlayState extends MusicBeatState
 
 		var iconOffset:Int = 26;
 		
-		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.50)));
-		iconP1.updateHitbox();
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, Utility.boundTo(1 - (elapsed * 30), 0, 1))));
+		iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, Utility.boundTo(1 - (elapsed * 30), 0, 1))));
 
-		iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.50)));
+		iconP1.updateHitbox();
 		iconP2.updateHitbox();
+		
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
 		if (health > 2)
@@ -624,30 +605,14 @@ class PlayState extends MusicBeatState
 			detailsPausedText = "Paused - " + detailsText;
 			DiscordClient.changePresence(detailsText + " " + SONG.song,"\nAccuracy: " + HelperFunctions.truncateFloat(accuracy, 2) +  "% ( " + Ratings.GenerateLetterRank(accuracy) + " )", iconRPC);
 			#end
-	
-			
-			try
-			{
-				if(SONG.dadHasTrail)
-				{
-					susTrail = new FlxTrail(dad, null, 5, 7, 0.3, 0.001);
-					add(susTrail);
-					susTrail3 = new FlxTrail(player3, null, 5, 7, 0.3, 0.001);
-					add(susTrail3);
-				}
-			}
-			catch(x)
-			{
-				trace(x);
-			}
 			
 			Conductor.mapBPMChanges(SONG);
 			Conductor.changeBPM(SONG.bpm);
 		
-			var path:String = Paths.txt("data/dialogue/" + SONG.song + "/dialogue");
+			/*var path:String = Paths.txt("data/dialogue/" + SONG.song + "/dialogue");
 			
 			if (SONG.hasDialogue)
-				dialogue = Utility.coolTextFile(path);
+				dialogue = Utility.coolTextFile(path);*/
 	
 			if (traceData) 
 			{
@@ -1226,10 +1191,10 @@ class PlayState extends MusicBeatState
 			startingSong = true;
 			trace('Song Starting...');
 
-			if (SONG.hasDialogue && isStoryMode)
+			/*if (SONG.hasDialogue && isStoryMode)
 				startDialogue(dialogueBox);
 	
-			else
+			else*/
 				startCountdown();
 	
 			if (!loadRep)
@@ -1311,33 +1276,6 @@ class PlayState extends MusicBeatState
 			
 			var playerCounter:Int = 0;
 	
-			#if windows
-			var songLowercase = StringTools.replace(PlayState.SONG.song, " ", "-").toLowerCase();
-			var songPath:String;
-	
-			// Hey future cuzsie! If your ever gonna change the song path again, FOR THE LOVE OF GOD REMEMBER TO CHANGE THIS
-			songPath = 'songs/' + songLowercase + '/';
-		
-			for(file in sys.FileSystem.readDirectory(songPath))
-			{
-				var path = haxe.io.Path.join([songPath, file]);
-				if(!sys.FileSystem.isDirectory(path))
-				{
-					if(path.endsWith('.offset'))
-					{
-						trace('Found offset file: ' + path);
-						songOffset = Std.parseFloat(file.substring(0, file.indexOf('.off')));
-						break;
-					}
-					else 
-					{
-						trace('Offset file not found. Creating one @: ' + songPath);
-						sys.io.File.saveContent(songPath + songOffset + '.offset', '');
-					}
-				}
-			}
-			#end
-			
 			var daBeats:Int = 0;
 			
 			for (section in noteData)
@@ -1584,10 +1522,10 @@ class PlayState extends MusicBeatState
 					if (downscroll)
 					{
 						if (daNote.mustPress)
-							daNote.y = (playerStrums.members[Math.floor(Math.abs(daNote.noteData))].y + 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(scrollSpeed == 1 ? SONG.speed : scrollSpeed, 2));
+							daNote.y = (playerStrums.members[Math.floor(Math.abs(daNote.noteData))].y + 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(scrollSpeed == 1 ? scrollSpeed : scrollSpeed, 2));
 								
 						else
-							daNote.y = (strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y + 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(scrollSpeed == 1 ? SONG.speed : scrollSpeed, 2));
+							daNote.y = (strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y + 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(scrollSpeed == 1 ? scrollSpeed : scrollSpeed, 2));
 								
 						if(daNote.isSustainNote)
 						{
@@ -1625,10 +1563,10 @@ class PlayState extends MusicBeatState
 					else
 					{
 						if (daNote.mustPress)
-							daNote.y = (playerStrums.members[Math.floor(Math.abs(daNote.noteData))].y - 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(scrollSpeed == 1 ? SONG.speed : scrollSpeed, 2));
+							daNote.y = (playerStrums.members[Math.floor(Math.abs(daNote.noteData))].y - 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(scrollSpeed == 1 ? scrollSpeed : scrollSpeed, 2));
 						
 						else
-							daNote.y = (strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y - 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(scrollSpeed == 1 ? SONG.speed : scrollSpeed, 2));
+							daNote.y = (strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y - 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(scrollSpeed == 1 ? scrollSpeed : scrollSpeed, 2));
 						
 						if(daNote.isSustainNote)	
 						{
@@ -1969,6 +1907,7 @@ class PlayState extends MusicBeatState
 			rating.y -= 50;
 			rating.cameras = [camHUD];
 			rating.screenCenter();
+			rating.antialiasing = true;
 			add(rating);
 
 			if (combo > highestCombo)
@@ -2519,8 +2458,8 @@ class PlayState extends MusicBeatState
 		}
 		wiggleShit.update(Conductor.crochet);
 		
-		iconP1.setGraphicSize(Std.int(iconP1.width + 30));
-		iconP2.setGraphicSize(Std.int(iconP2.width + 30));
+		iconP1.setGraphicSize(Std.int(iconP1.width + 60));
+		iconP2.setGraphicSize(Std.int(iconP2.width + 60));
 			
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();

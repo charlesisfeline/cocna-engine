@@ -63,87 +63,14 @@ class Credits extends MusicBeatState
       [
 
       ]),
-      new Person("Galcy", CreditsType.Dev, "Artist",
+
+
+      // Contributors //
+      new Person("Leather128", CreditsType.Contributor, "Mods button",
       [
 
       ]),
-      new Person("PTG", CreditsType.Dev, "dont really know yet :trol:",
-      [
-
-      ]),
-      new Person("Memory_001", CreditsType.Dev, "dont really know yet :trol:",
-      [
-
-      ]),
-      new Person("sk0rbias", CreditsType.Dev, "Made some of the Credits Icons",
-      [
-
-      ]),
-
-
-
-      // Beta Testers //
-      new Person("German", CreditsType.BetaTester, "Beta Tester",
-      [
-
-      ]),
-      new Person("Ietsy", CreditsType.BetaTester, "Beta Tester",
-      [
-
-      ]),
-      new Person("Foxnap", CreditsType.BetaTester, "Beta Tester",
-      [
-
-      ]),
-
-
-
-      // Speical Thanks (aka i like alotta people) //
-      new Person("MoldyGH", CreditsType.SpecialThanks, "",
-      [
-
-      ]),
-      new Person("Epic189Cool", CreditsType.SpecialThanks, "",
-      [
-
-      ]),
-      new Person("Niffirg", CreditsType.SpecialThanks, "",
-      [
-
-      ]),
-      new Person("Carxsor", CreditsType.SpecialThanks, "",
-      [
-
-      ]),
-      new Person("MissingTextureMan101", CreditsType.SpecialThanks, "",
-      [
-
-      ]),
-      new Person("Leather128", CreditsType.SpecialThanks, "",
-      [
-
-      ]),
-      new Person("MoonCakeez", CreditsType.SpecialThanks, "",
-      [
-
-      ]),
-      new Person("wildy", CreditsType.SpecialThanks, "bob mod x)",
-      [
-
-      ]),
-      new Person("Sticky", CreditsType.SpecialThanks, "",
-      [
-
-      ]),
-      new Person("CesarFever", CreditsType.SpecialThanks, "",
-      [
-
-      ]),
-      new Person("kaistudio", CreditsType.SpecialThanks, "",
-      [
-
-      ]),
-      new Person("PaperKitty", CreditsType.Dev, "dont really know yet :trol:",
+      new Person("sk0rbias", CreditsType.Contributor, "Made some of the Credits Icons",
       [
 
       ])
@@ -164,8 +91,8 @@ class Credits extends MusicBeatState
       selectedPersonGroup.cameras = [selectPersonCam];
 
       state = State.SelectingName;
-      defaultFormat = new FlxText().setFormat("Aller", 32, FlxColor.WHITE, CENTER);
-      selectedFormat = new FlxText().setFormat("Aller", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+      defaultFormat = new FlxText().setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
+      selectedFormat = new FlxText().setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
       selectedFormat.borderSize = 2;
       selectedFormat.borderQuality = 2;
       

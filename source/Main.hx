@@ -12,15 +12,20 @@ import openfl.Lib;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
+import lime.app.Application;
+import openfl.events.UncaughtErrorEvent;
+import haxe.CallStack;
+import openfl.errors.Error;
+import openfl.events.ErrorEvent;
 
 class Main extends Sprite
 {
 	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
-	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
+	var gameHeight:Int = 720; // Height of the ga me in pixels (might be less / more in actual pixels depending on your zoom).
 	var initialState:Class<FlxState> = TitleState; // The FlxState the game starts with.
 	var zoom:Float = -1; // If -1, zoom is automatically calculated to fit the window dimensions.
 	var framerate:Int = 120; // How many frames per second the game should run at.
-	var skipSplash:Bool = false; // Whether to skip the flixel splash screen that appears in release mode.
+	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
 
 	public static var instance:Main;
@@ -35,6 +40,29 @@ class Main extends Sprite
 		instance = this;
 
 		super();
+
+		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, function(e:UncaughtErrorEvent) 
+		{
+			var m:String = e.error;
+			
+			if (Std.isOfType(e.error, Error)) 
+			{
+				var err = cast(e.error, Error);
+				m = '${err.message}';
+			} 
+			else if (Std.isOfType(e.error, ErrorEvent)) 
+			{
+				var err = cast(e.error, ErrorEvent);
+				m = '${err.text}';
+			}
+
+			m += '\r\n ${CallStack.toString(CallStack.exceptionStack())}';
+
+			trace('An uncaught error occured!\r\r\r\n\r\n${m}\r\n\r\nIf the problem presists, report the bug to the github!!');
+ 			Application.current.window.alert('An uncaught error occured!\r\n\r\n${m}\r\n\r\nIf the problem presists, report the bug to the github!!', e.error);
+			e.stopPropagation();
+			e.stopImmediatePropagation();
+		});
 
 		if (stage != null)
 		{
@@ -54,13 +82,21 @@ class Main extends Sprite
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 		}
+
+
+		stage.window.onDropFile.add(function(path:String) 
+		{
+			FlxG.switchState(new FreeplayState());
+		});
+
+
 		setupGame();
 	}
 
 	private function setupGame():Void
 	{
-		var stageWidth:Int = Lib.current.stage.stageWidth;
-		var stageHeight:Int = Lib.current.stage.stageHeight;
+		var stageWidth:Int = Lib.application.window.width;
+		var stageHeight:Int = Lib.application.window.height;
 
 		if (zoom == -1)
 		{
