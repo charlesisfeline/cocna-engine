@@ -20,7 +20,7 @@ class DevDebugMenu extends FlxSubState
         (
             0,0,0,
             "Welcome to the\n
-            Cuzsie Engine Debugger\n\n
+            Cocna Engine Debugger\n\n
             
             One - Test Dialogue\n
             Two - External List Test\n
