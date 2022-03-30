@@ -58,7 +58,7 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
-		FlxG.save.bind('cuzsie-engine', 'cuzsie');
+		FlxG.save.bind('cocna-engine', 'cocna');
 
 		KadeEngineData.initSave();
 		PlayerSettings.init();
